@@ -1,5 +1,7 @@
 import Image from "next/image";
 
+import { cn } from "@/lib/utils";
+
 interface ProductImageProps {
   src?: string;
   alt: string;
@@ -11,8 +13,10 @@ interface ProductImageProps {
 
 /**
  * Renders a real product image when an http(s) URL or local public path is
- * available, otherwise an honest placeholder. Missing product images are stored
- * as a no-image state in the product database.
+ * available, otherwise an honest placeholder. The wrapper is absolutely
+ * positioned so it fills any positioning parent (e.g. AspectRatio or a
+ * relative card). Missing product images are stored as a no-image state in the
+ * product database — the placeholder says so explicitly.
  */
 export default function ProductImage({
   src,
@@ -27,24 +31,31 @@ export default function ProductImage({
 
   if (isRenderableImage) {
     return (
-      <Image
-        src={src as string}
-        alt={alt}
-        fill
-        sizes={sizes}
-        priority={priority}
-        className={`object-contain p-3 ${className ?? ""}`}
-      />
+      <div className={cn("absolute inset-0", className)}>
+        <Image
+          src={src as string}
+          alt={alt}
+          fill
+          sizes={sizes}
+          priority={priority}
+          className="object-contain p-3"
+        />
+      </div>
     );
   }
 
   return (
-    <div className={`product-placeholder ${className ?? ""}`} aria-label={`${alt} — image on request`}>
+    <div
+      className={cn("product-placeholder absolute inset-0", className)}
+      aria-label={`${alt} — image on request`}
+    >
       <div className="px-4">
         <span className="block text-xs font-semibold uppercase tracking-widest text-brand-700">
           {label ?? "Product"}
         </span>
-        <span className="mt-1 block text-xs text-slate-400">No image in source</span>
+        <span className="mt-1 block text-xs text-muted-foreground">
+          No image in source
+        </span>
       </div>
     </div>
   );

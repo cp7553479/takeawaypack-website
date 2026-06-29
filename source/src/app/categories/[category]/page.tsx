@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import InquiryCTA from "@/components/InquiryCTA";
 import ProductCard from "@/components/ProductCard";
 import RfqChecklist from "@/components/RfqChecklist";
+import { Button } from "@/components/ui/button";
 import { getCategories, getProductsByCategory } from "@/lib/dataAdapter";
 
 interface PageProps {
@@ -32,20 +33,30 @@ export default async function CategoryPage({ params }: PageProps) {
 
   return (
     <>
-      <section className="border-b border-slate-200 bg-slate-50">
+      <section className="border-b bg-secondary/40">
         <div className="container-page section-tight">
-          <nav className="text-xs text-slate-500" aria-label="Breadcrumb">
-            <Link href="/" className="hover:text-brand-700">Home</Link>
+          <nav className="text-xs text-muted-foreground" aria-label="Breadcrumb">
+            <Link href="/" className="hover:text-primary">
+              Home
+            </Link>
             <span className="mx-1.5">/</span>
-            <Link href="/products" className="hover:text-brand-700">Products</Link>
+            <Link href="/products" className="hover:text-primary">
+              Products
+            </Link>
           </nav>
-          <span className="eyebrow mt-3 block">Category</span>
-          <h1 className="mt-2 text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
+          <p className="eyebrow mt-3 block">Category</p>
+          <h1 className="mt-2 text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
             {cat!.name}
           </h1>
-          {cat!.description ? <p className="lead mt-3 max-w-2xl">{cat!.description}</p> : null}
-          <div className="mt-4">
-            <Link href="/contact" className="btn-accent">Request a quotation</Link>
+          {cat!.description ? (
+            <p className="mt-3 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">
+              {cat!.description}
+            </p>
+          ) : null}
+          <div className="mt-5">
+            <Button asChild variant="kraft">
+              <Link href="/contact">Request a quotation</Link>
+            </Button>
           </div>
         </div>
       </section>
@@ -57,7 +68,7 @@ export default async function CategoryPage({ params }: PageProps) {
 
       <section className="section">
         <div className="container-page">
-          <p className="mb-6 text-sm text-slate-500">
+          <p className="mb-6 text-sm text-muted-foreground">
             {products.length} product{products.length === 1 ? "" : "s"} in this category
           </p>
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">

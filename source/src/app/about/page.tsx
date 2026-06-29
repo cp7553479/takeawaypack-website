@@ -1,9 +1,13 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { CheckCircle2 } from "lucide-react";
 
 import InquiryCTA from "@/components/InquiryCTA";
-import ProcessSteps from "@/components/ProcessSteps";
+import SectionHeading from "@/components/section-heading";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { getSiteData } from "@/lib/dataAdapter";
 import { getMediaAssetUrl } from "@/lib/mediaAssets";
 
@@ -51,29 +55,32 @@ export default async function AboutPage() {
 
   return (
     <>
-      <section className="relative overflow-hidden border-b border-slate-200 bg-white">
-        <div className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-brand-50 to-white" />
-        <div className="container-page section relative grid items-center gap-10 lg:grid-cols-[0.9fr_1.1fr]">
-          <div className="max-w-[358px] sm:max-w-none">
-            <span className="eyebrow">About {info.brandName}</span>
-            <h1 className="mt-3 break-words text-3xl font-extrabold leading-tight tracking-tight text-slate-950 text-balance sm:text-5xl">
+      <section className="relative overflow-hidden border-b">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 bg-gradient-to-b from-accent/60 via-background to-background"
+        />
+        <div className="container-page relative grid items-center gap-12 py-16 lg:grid-cols-[0.9fr_1.1fr] lg:py-24">
+          <div>
+            <p className="eyebrow">About {info.brandName}</p>
+            <h1 className="mt-3 text-balance text-3xl font-extrabold leading-tight tracking-tight text-foreground sm:text-5xl">
               Packaging sourcing support for foodservice brands and trade buyers.
             </h1>
-            <p className="lead mt-5 max-w-2xl">
+            <p className="mt-5 max-w-2xl text-lg leading-relaxed text-muted-foreground">
               {dataIsSample
                 ? "This page uses cautious placeholder company language until verified company data is provided. The site is structured to present real capabilities, documents, and sourcing details once confirmed."
                 : info.description}
             </p>
-            <div className="mt-7 grid grid-cols-1 gap-3 sm:flex sm:flex-wrap">
-              <Link href="/contact" className="btn-primary w-full sm:w-auto">
-                Get a Quote
-              </Link>
-              <Link href="/products" className="btn-outline w-full sm:w-auto">
-                Browse Products
-              </Link>
+            <div className="mt-7 flex flex-wrap gap-3">
+              <Button asChild size="lg">
+                <Link href="/contact">Get a Quote</Link>
+              </Button>
+              <Button asChild size="lg" variant="outline">
+                <Link href="/products">Browse Products</Link>
+              </Button>
             </div>
           </div>
-          <div className="relative aspect-[16/11] max-w-[358px] overflow-hidden rounded-2xl border border-slate-200 bg-slate-100 shadow-xl shadow-slate-200/70 sm:max-w-none">
+          <div className="relative aspect-[16/11] overflow-hidden rounded-3xl border bg-card shadow-xl">
             <Image
               src={heroImage}
               alt="Foodservice packaging range for export sourcing"
@@ -88,33 +95,29 @@ export default async function AboutPage() {
 
       <section className="section">
         <div className="container-page">
-          <div className="max-w-3xl">
-            <span className="eyebrow">Buyer promise</span>
-            <h2 className="h-section mt-2">The relationship is built on verified details, not vague claims.</h2>
-            <p className="lead mt-3">
-              For overseas procurement, the important work is reducing uncertainty: matching
-              samples, confirming print and material choices, and documenting packing details
-              before money and lead time are committed.
-            </p>
-          </div>
-          <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <SectionHeading
+            eyebrow="Buyer promise"
+            title="The relationship is built on verified details, not vague claims."
+            description="For overseas procurement, the important work is reducing uncertainty: matching samples, confirming print and material choices, and documenting packing details before money and lead time are committed."
+          />
+          <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {BUYER_PROMISE.map((item) => (
-              <div key={item} className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-brand-100 text-brand-700">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M20 6L9 17l-5-5" />
-                  </svg>
+              <Card key={item} className="h-full p-5">
+                <span className="flex h-9 w-9 items-center justify-center rounded-full bg-accent text-accent-foreground">
+                  <CheckCircle2 className="h-5 w-5" />
                 </span>
-                <p className="mt-4 text-sm font-semibold leading-relaxed text-slate-800">{item}</p>
-              </div>
+                <p className="mt-4 text-sm font-semibold leading-relaxed text-foreground">
+                  {item}
+                </p>
+              </Card>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="section bg-slate-50">
+      <section className="section bg-secondary/40">
         <div className="container-page grid items-center gap-10 lg:grid-cols-2">
-          <div className="relative aspect-[4/3] overflow-hidden rounded-2xl border border-slate-200 bg-slate-100">
+          <div className="relative aspect-[4/3] overflow-hidden rounded-2xl border bg-card">
             <Image
               src={customImage}
               alt="Custom printed foodservice packaging design and material options"
@@ -124,17 +127,16 @@ export default async function AboutPage() {
             />
           </div>
           <div>
-            <span className="eyebrow">Capabilities narrative</span>
-            <h2 className="h-section mt-2">A practical packaging studio for custom foodservice programs.</h2>
-            <p className="lead mt-3">
-              Buyers can use the catalog as a starting point, then refine structure, coating,
-              capacity, print, lid matching, and carton packing through the RFQ process.
-            </p>
+            <SectionHeading
+              eyebrow="Capabilities"
+              title="A practical packaging studio for custom foodservice programs."
+              description="Buyers can use the catalog as a starting point, then refine structure, coating, capacity, print, lid matching, and carton packing through the RFQ process."
+            />
             {info.services && info.services.length > 0 ? (
               <ul className="mt-6 flex flex-wrap gap-2">
                 {info.services.map((service) => (
-                  <li key={service} className="chip border-brand-200 bg-brand-50 text-brand-800">
-                    {service}
+                  <li key={service}>
+                    <Badge variant="brand">{service}</Badge>
                   </li>
                 ))}
               </ul>
@@ -143,19 +145,16 @@ export default async function AboutPage() {
         </div>
       </section>
 
-      <section className="section bg-white">
+      <section className="section">
         <div className="container-page grid gap-10 lg:grid-cols-[0.9fr_1.1fr]">
           <div>
-            <span className="eyebrow">Sustainability</span>
-            <h2 className="h-section mt-2">Sustainable options, stated carefully and confirmed by specification.</h2>
-            <p className="lead mt-3">
-              Material choices can include kraft paper, paperboard, bagasse, CPLA, or other
-              options depending on product requirements. Exact compostability, recyclability,
-              coating, and food-contact documentation should be confirmed for each destination
-              market before publishing or ordering.
-            </p>
+            <SectionHeading
+              eyebrow="Sustainability"
+              title="Sustainable options, stated carefully and confirmed by specification."
+              description="Material choices can include kraft paper, paperboard, bagasse, CPLA, or other options depending on product requirements. Exact compostability, recyclability, coating, and food-contact documentation should be confirmed for each destination market before publishing or ordering."
+            />
           </div>
-          <div className="relative aspect-[16/10] overflow-hidden rounded-2xl border border-slate-200 bg-slate-100">
+          <div className="relative aspect-[16/10] overflow-hidden rounded-2xl border bg-card">
             <Image
               src={ecoImage}
               alt="Sustainable packaging material options for foodservice sourcing"
@@ -167,47 +166,51 @@ export default async function AboutPage() {
         </div>
       </section>
 
-      <section className="section bg-slate-950 text-white">
-        <div className="container-page grid items-center gap-10 lg:grid-cols-2">
-          <div>
-            <span className="eyebrow text-brand-300">Quality & export flow</span>
+      <section className="section bg-primary text-primary-foreground">
+        <div className="container-page">
+          <div className="max-w-2xl">
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary-foreground/70">
+              Quality &amp; export flow
+            </p>
             <h2 className="mt-2 text-2xl font-bold tracking-tight sm:text-3xl">
               A clear path from sourcing brief to shipment handoff.
             </h2>
-            <p className="mt-3 text-base leading-relaxed text-slate-300 sm:text-lg">
+            <p className="mt-3 text-base leading-relaxed text-primary-foreground/85">
               This workflow is presented as a buyer-facing reference. The supporting image is
               generated marketing artwork and should not be described as a real factory photo.
             </p>
           </div>
-          <div className="relative aspect-[16/10] overflow-hidden rounded-2xl border border-white/10 bg-slate-800">
+          <div className="relative mt-8 aspect-[16/9] overflow-hidden rounded-2xl border border-white/10 bg-black/20 sm:aspect-[16/6]">
             <Image
               src={qualityImage}
               alt="Quality control and export packing workflow reference"
               fill
-              sizes="(min-width: 1024px) 48vw, 100vw"
+              sizes="(min-width: 1024px) 100vw, 100vw"
               className="object-cover"
             />
           </div>
-        </div>
-        <div className="container-page mt-10">
-          <ol className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <ol className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {QUALITY_TIMELINE.map((step, index) => (
               <li key={step.title} className="rounded-xl border border-white/10 bg-white/5 p-5">
-                <span className="text-sm font-semibold text-kraft-300">0{index + 1}</span>
+                <span className="text-sm font-semibold text-kraft-300">
+                  {String(index + 1).padStart(2, "0")}
+                </span>
                 <h3 className="mt-3 text-base font-semibold">{step.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-slate-300">{step.body}</p>
+                <p className="mt-2 text-sm leading-relaxed text-primary-foreground/80">
+                  {step.body}
+                </p>
               </li>
             ))}
           </ol>
         </div>
       </section>
 
-      <section className="section bg-slate-50">
+      <section className="section bg-secondary/40">
         <div className="container-page grid gap-8 lg:grid-cols-[0.9fr_1.1fr]">
-          <div>
-            <span className="eyebrow">Information to confirm</span>
-            <h2 className="h-section mt-2">Trust details that should come from verified source data.</h2>
-          </div>
+          <SectionHeading
+            eyebrow="Information to confirm"
+            title="Trust details that should come from verified source data."
+          />
           <div className="grid gap-4 sm:grid-cols-2">
             {[
               {
@@ -229,16 +232,17 @@ export default async function AboutPage() {
                   : "Current company content is loaded from imported source data; still verify sensitive claims before publishing.",
               },
             ].map((item) => (
-              <div key={item.title} className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-                <h3 className="text-base font-semibold text-slate-950">{item.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-slate-600">{item.body}</p>
-              </div>
+              <Card key={item.title} className="h-full p-5">
+                <h3 className="text-base font-semibold text-foreground">{item.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                  {item.body}
+                </p>
+              </Card>
             ))}
           </div>
         </div>
       </section>
 
-      <ProcessSteps info={info} />
       <InquiryCTA />
     </>
   );

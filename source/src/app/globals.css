@@ -2,30 +2,73 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --color-bg: #ffffff;
-  --color-fg: #0f172a;
+/*
+ * Design system for the shadcn/ui rebuild of TakeawayPack.
+ * Semantic tokens below are consumed by Tailwind (tailwind.config.ts maps them
+ * to hsl(var(--token))). The palette pairs a forest-green primary with a warm
+ * kraft secondary — an "eco foodservice packaging" B2B identity.
+ */
+@layer base {
+  :root {
+    --background: 40 33% 99%;
+    --foreground: 155 22% 11%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 155 22% 11%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 155 22% 11%;
+
+    --primary: 149 60% 19%;
+    --primary-foreground: 40 44% 98%;
+
+    --secondary: 40 34% 93%;
+    --secondary-foreground: 152 28% 16%;
+
+    --muted: 150 16% 96%;
+    --muted-foreground: 152 9% 42%;
+
+    --accent: 142 58% 93%;
+    --accent-foreground: 150 48% 18%;
+
+    --destructive: 0 72% 48%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 150 16% 89%;
+    --input: 150 16% 87%;
+    --ring: 149 55% 30%;
+
+    --radius: 0.65rem;
+  }
 }
 
-html {
-  scroll-behavior: smooth;
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    overflow-x: hidden;
+    text-rendering: optimizeLegibility;
+  }
 }
 
-body {
-  background-color: var(--color-bg);
-  color: var(--color-fg);
-  overflow-x: hidden;
-  -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
-}
-
+/*
+ * Page-level layout helpers used alongside shadcn primitives. These are kept
+ * minimal so the design language lives in components, not global CSS.
+ */
 @layer components {
   .container-page {
-    @apply mx-auto w-full max-w-[1200px] px-4 sm:px-6 lg:px-8;
+    @apply mx-auto w-full max-w-[1200px] px-5 sm:px-6 lg:px-8;
   }
 
   .section {
-    @apply py-14 sm:py-20;
+    @apply py-16 sm:py-24;
   }
 
   .section-tight {
@@ -33,77 +76,12 @@ body {
   }
 
   .eyebrow {
-    @apply text-xs font-semibold uppercase tracking-[0.18em] text-brand-700;
+    @apply text-xs font-semibold uppercase tracking-[0.2em] text-brand-700;
   }
 
-  .h-section {
-    @apply text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl;
-  }
-
-  .lead {
-    @apply text-base leading-relaxed text-slate-600 sm:text-lg;
-  }
-
-  /* Button base shared by all variants (self-contained, no @apply of custom classes). */
-  .btn,
-  .btn-primary,
-  .btn-accent,
-  .btn-outline,
-  .btn-ghost {
-    @apply inline-flex items-center justify-center gap-2 rounded-lg px-5 py-2.5 text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60;
-  }
-
-  .btn-primary {
-    @apply bg-brand-600 text-white shadow-sm hover:bg-brand-700;
-  }
-
-  .btn-accent {
-    @apply bg-kraft-500 text-white shadow-sm hover:bg-kraft-600;
-  }
-
-  .btn-outline {
-    @apply border border-slate-300 bg-white text-slate-800 hover:border-slate-400 hover:bg-slate-50;
-  }
-
-  .btn-ghost {
-    @apply border border-transparent text-slate-700 hover:bg-slate-100;
-  }
-
-  .card {
-    @apply rounded-xl border border-slate-200 bg-white shadow-sm;
-  }
-
-  .card-hover {
-    @apply transition hover:-translate-y-0.5 hover:border-brand-300 hover:shadow-md;
-  }
-
-  .chip {
-    @apply inline-flex items-center rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-medium text-slate-700;
-  }
-
-  .label {
-    @apply mb-1.5 block text-sm font-medium text-slate-700;
-  }
-
-  .input {
-    @apply block w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 shadow-sm transition placeholder:text-slate-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/30;
-  }
-
-  .input-error {
-    @apply border-red-400 focus:border-red-500 focus:ring-red-500/30;
-  }
-
-  .field-error {
-    @apply mt-1 text-xs text-red-600;
-  }
-
-  /* Honest placeholder for products without a usable image URL. */
+  /* Honest placeholder for products that have no usable source image. */
   .product-placeholder {
-    @apply flex h-full w-full items-center justify-center bg-gradient-to-br from-brand-50 via-white to-kraft-50 text-center;
-  }
-
-  .gallery-nav-button {
-    @apply inline-flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white/90 text-slate-800 shadow-sm backdrop-blur transition hover:border-brand-300 hover:text-brand-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2;
+    @apply flex h-full w-full items-center justify-center bg-gradient-to-br from-accent via-background to-secondary text-center;
   }
 }
 

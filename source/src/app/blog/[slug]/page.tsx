@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import InquiryCTA from "@/components/InquiryCTA";
+import { Badge } from "@/components/ui/badge";
 import { BLOG_POSTS, getBlogPost } from "@/lib/blogPosts";
 
 interface PageProps {
@@ -29,21 +30,27 @@ export default function BlogPostPage({ params }: PageProps) {
   return (
     <>
       <article>
-        <section className="border-b border-slate-200 bg-slate-50">
+        <section className="border-b bg-secondary/40">
           <div className="container-page section-tight">
-            <nav className="text-xs text-slate-500" aria-label="Breadcrumb">
-              <Link href="/" className="hover:text-brand-700">Home</Link>
+            <nav className="text-xs text-muted-foreground" aria-label="Breadcrumb">
+              <Link href="/" className="hover:text-primary">
+                Home
+              </Link>
               <span className="mx-1.5">/</span>
-              <Link href="/blog" className="hover:text-brand-700">Blog</Link>
+              <Link href="/blog" className="hover:text-primary">
+                Blog
+              </Link>
             </nav>
             <div className="mt-5 max-w-3xl">
-              <span className="eyebrow">{post.category}</span>
-              <h1 className="mt-3 text-3xl font-extrabold tracking-tight text-slate-950 sm:text-5xl">
+              <Badge variant="brand">{post.category}</Badge>
+              <h1 className="mt-4 text-balance text-3xl font-extrabold tracking-tight text-foreground sm:text-5xl">
                 {post.title}
               </h1>
-              <p className="lead mt-4">{post.excerpt}</p>
-              <p className="mt-4 text-sm text-slate-500">
-                {post.date} - {post.readTime}
+              <p className="mt-4 text-lg leading-relaxed text-muted-foreground">
+                {post.excerpt}
+              </p>
+              <p className="mt-4 text-sm text-muted-foreground">
+                {post.date} · {post.readTime}
               </p>
             </div>
           </div>
@@ -54,12 +61,12 @@ export default function BlogPostPage({ params }: PageProps) {
             <div className="space-y-10">
               {post.sections.map((section) => (
                 <section key={section.heading}>
-                  <h2 className="text-xl font-bold text-slate-950">{section.heading}</h2>
-                  <p className="mt-3 leading-relaxed text-slate-600">{section.body}</p>
+                  <h2 className="text-xl font-bold text-foreground">{section.heading}</h2>
+                  <p className="mt-3 leading-relaxed text-muted-foreground">{section.body}</p>
                 </section>
               ))}
             </div>
-            <div className="mt-10 rounded-xl border border-slate-200 bg-slate-50 p-5 text-sm leading-relaxed text-slate-600">
+            <div className="mt-10 rounded-xl border bg-secondary/40 p-5 text-sm leading-relaxed text-muted-foreground">
               Use these guides as preparation notes. Exact MOQ, price, lead time, compliance
               documents, and material claims should always be confirmed against the selected
               product specification and destination market.

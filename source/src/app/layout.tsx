@@ -17,8 +17,10 @@ export const viewport: Viewport = {
 
 export async function generateMetadata(): Promise<Metadata> {
   const { info } = await getSiteData();
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") || "http://localhost:3000";
-  const title = info.seo?.title ?? `${info.brandName} — Takeaway & Food Packaging | B2B Inquiry`;
+  const siteUrl =
+    process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") || "http://localhost:3000";
+  const title =
+    info.seo?.title ?? `${info.brandName} — Takeaway & Food Packaging | B2B Inquiry`;
   const description =
     info.seo?.description ??
     "Browse takeaway and food-service packaging and request a quotation directly.";
@@ -52,11 +54,16 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default async function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const data = await getSiteData();
   const nav = data.info.nav ?? [
     { label: "Home", href: "/" },
     { label: "Products", href: "/products" },
+    { label: "Categories", href: "/products" },
     { label: "Blog", href: "/blog" },
     { label: "About", href: "/about" },
     { label: "Contact", href: "/contact" },
@@ -64,8 +71,12 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
   return (
     <html lang="en">
-      <body className="flex min-h-screen flex-col bg-white text-slate-900">
-        <SiteHeader brandName={data.info.brandName} tagline={data.info.tagline} nav={nav} />
+      <body className="flex min-h-screen flex-col bg-background text-foreground">
+        <SiteHeader
+          brandName={data.info.brandName}
+          tagline={data.info.tagline}
+          nav={nav}
+        />
         <main className="flex-1">{children}</main>
         <SiteFooter info={data.info} categories={data.categories} />
       </body>

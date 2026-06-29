@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { CheckCircle2 } from "lucide-react";
+
+import { Button } from "@/components/ui/button";
 
 export const metadata: Metadata = {
   title: "Thank you",
@@ -10,19 +13,21 @@ export default function ThankYouPage() {
   return (
     <section className="section">
       <div className="container-page max-w-xl text-center">
-        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-brand-100 text-brand-700">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M20 6L9 17l-5-5" />
-          </svg>
+        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-accent text-accent-foreground">
+          <CheckCircle2 className="h-8 w-8" />
         </div>
-        <h1 className="mt-5 text-3xl font-extrabold tracking-tight text-slate-900">Thank you</h1>
-        <p className="lead mt-3">
+        <h1 className="mt-5 text-3xl font-extrabold tracking-tight text-foreground">Thank you</h1>
+        <p className="mt-3 text-lg leading-relaxed text-muted-foreground">
           Your inquiry has been received. The quotation team will review the details and follow up
           through the contact information you provided.
         </p>
-        <div className="mt-6 flex flex-wrap justify-center gap-3">
-          <Link href="/products" className="btn-outline">Continue browsing</Link>
-          <Link href="/" className="btn-primary">Back to home</Link>
+        <div className="mt-7 flex flex-wrap justify-center gap-3">
+          <Button asChild variant="outline">
+            <Link href="/products">Continue browsing</Link>
+          </Button>
+          <Button asChild>
+            <Link href="/">Back to home</Link>
+          </Button>
         </div>
       </div>
     </section>
