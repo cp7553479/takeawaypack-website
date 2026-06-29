@@ -1,4 +1,6 @@
 import { sql } from "@vercel/postgres";
+import fs from "node:fs";
+import path from "node:path";
 
 import { getSampleSiteData, slugify } from "@/data/fallback";
 import { hasSupabaseCatalogEnv, querySupabaseSiteData } from "@/lib/supabaseCatalog";
@@ -48,8 +50,217 @@ type SiteSettingRow = {
   value: string;
 };
 
+type RawImportRecord = {
+  record_id?: string;
+  fields?: Record<string, unknown>;
+};
+
 function hasPostgresEnv() {
   return Boolean(process.env.POSTGRES_URL || process.env.DATABASE_URL);
+}
+
+function sourceImportPath(...segments: string[]) {
+  return path.join(process.cwd(), "content", "imports", ...segments);
+}
+
+function text(value: unknown): string {
+  if (value == null) return "";
+  if (typeof value === "string") return value.trim();
+  if (typeof value === "number" || typeof value === "boolean") return String(value);
+  if (Array.isArray(value)) return value.map(text).filter(Boolean).join(", ");
+  if (typeof value === "object") {
+    const record = value as Record<string, unknown>;
+    return text(record.text ?? record.name ?? record.value ?? record.content ?? record.link ?? "");
+  }
+  return "";
+}
+
+function intOrNull(value: unknown): number | null {
+  if (value == null || value === "") return null;
+  const n = Number(value);
+  return Number.isFinite(n) ? Math.trunc(n) : null;
+}
+
+function normalizeCurrency(value: unknown) {
+  const original = text(value);
+  return original === "US dolar" ? "US dollar" : original || undefined;
+}
+
+function rawArray(value: unknown): unknown[] {
+  return Array.isArray(value) ? value : [];
+}
+
+function rawImagePaths(fields: Record<string, unknown>) {
+  return ["商品主图", "白底图", "参考图片"]
+    .flatMap((field) => rawArray(fields[field]))
+    .map((item) => text(item))
+    .filter((item) => item.startsWith("/products/"));
+}
+
+function buildImportedSpecs(fields: Record<string, unknown>): ProductSpec[] {
+  const specs: ProductSpec[] = [];
+  const add = (label: string, value: unknown) => {
+    const rendered = text(value);
+    if (rendered) specs.push({ label, value: rendered });
+  };
+
+  add("SKU", fields["SKU"] || fields["产品编号"]);
+  add("Material", fields["产品材质"]);
+  add("Type", fields["产品类型"]);
+  add("Specification", fields["产品规格"]);
+  add("Printing", fields["印刷方式"]);
+  add("Pieces/ctn", fields["件数/箱"]);
+  add("MOQ", fields["大货起订量"] || fields["Q1"]);
+  add("Carton L(cm)", fields["箱子尺寸 长(cm)"]);
+  add("Carton W(cm)", fields["箱子尺寸 宽(cm)"]);
+  add("Carton H(cm)", fields["箱子尺寸 高(cm)"]);
+  add("Gross Weight(kg)", fields["重量(箱子+产品)公斤"]);
+  return specs;
+}
+
+function formatImportedPriceNote(fields: Record<string, unknown>): string {
+  const currency = normalizeCurrency(fields["Currency"]) || "US dollar";
+  for (let tier = 1; tier <= 10; tier += 1) {
+    const price = text(fields[`P${tier}`]);
+    if (!price) continue;
+    const quantity = intOrNull(fields[`Q${tier}`]);
+    const quantityLabel = quantity ? `${quantity.toLocaleString()} pcs` : "quoted quantity";
+    return `From ${currency} ${price} at ${quantityLabel}`;
+  }
+  return "Contact for quote";
+}
+
+function readLocalSiteInfo(): SiteInfo | null {
+  const file = sourceImportPath("site-info.raw.json");
+  if (!fs.existsSync(file)) return null;
+
+  const parsed = JSON.parse(fs.readFileSync(file, "utf8")) as {
+    data?: { data?: unknown[][] };
+  };
+  const rows = parsed.data?.data ?? [];
+  const settings = new Map(
+    rows
+      .map((row) => [text(row[0]), text(row[1])] as const)
+      .filter(([key, value]) => key && value)
+  );
+  if (settings.size === 0) return null;
+
+  const trustPillars = [1, 2, 3, 4]
+    .map((n) => settings.get(`Trust Pillar ${n}`))
+    .filter((value): value is string => Boolean(value));
+
+  return {
+    source: "imported",
+    brandName: settings.get("Company Name") ?? "TakeawayPack",
+    tagline: settings.get("Positioning"),
+    slogan: settings.get("Positioning"),
+    description: settings.get("Brand Philosophy") ?? "",
+    valueProps: trustPillars,
+    contact: {
+      email: settings.get("General Enquiries Email"),
+      phone: settings.get("Direct Support"),
+      address: [settings.get("Headquarters Address"), settings.get("Postal Code")]
+        .filter(Boolean)
+        .join(", "),
+    },
+    markets: splitList(settings.get("Target Markets")),
+    services: splitList(settings.get("Functional Keywords")),
+    seo: {
+      title: `${settings.get("Company Name") ?? "TakeawayPack"} — ${settings.get("Positioning") ?? "Foodservice Packaging"}`,
+      description: settings.get("Brand Philosophy"),
+      keywords: [
+        ...splitList(settings.get("Primary Keywords")),
+        ...splitList(settings.get("Value Keywords")),
+      ],
+    },
+    rawNote:
+      "Company info loaded from local verified Feishu Base export source/content/imports/site-info.raw.json.",
+  };
+}
+
+function queryLocalImportSiteData(): SiteData | null {
+  const file = sourceImportPath("products.raw.json");
+  if (!fs.existsSync(file)) return null;
+
+  const parsed = JSON.parse(fs.readFileSync(file, "utf8")) as {
+    records?: RawImportRecord[];
+  };
+  const records = parsed.records ?? [];
+  if (records.length === 0) return null;
+
+  const slugCounts = new Map<string, number>();
+  const products: Product[] = records.map((record) => {
+    const fields = record.fields ?? {};
+    const baseRecordId = text(record.record_id || fields.record_id);
+    const name = text(fields["产品名称"] || fields["产品简称"] || fields["SKU"] || baseRecordId);
+    const shortName = text(fields["产品简称"]);
+    const category = text(fields["分类"] || fields["产品类型"]) || "Products";
+    const categorySlug = slugify(category) || "products";
+    const sku = text(fields["SKU"] || fields["产品编号"]) || baseRecordId;
+    const baseSlug = slugify(shortName || name || sku) || slugify(baseRecordId);
+    const count = slugCounts.get(baseSlug) ?? 0;
+    slugCounts.set(baseSlug, count + 1);
+    const slug = count === 0 ? baseSlug : `${baseSlug}-${count + 1}`;
+    const gallery = Array.from(new Set(rawImagePaths(fields)));
+    const hasQuote = Array.from({ length: 10 }, (_, i) => text(fields[`P${i + 1}`])).some(Boolean);
+
+    return {
+      source: "imported",
+      id: baseRecordId || slug,
+      baseRecordId: baseRecordId || undefined,
+      slug,
+      name,
+      category,
+      categorySlug,
+      summary: text(fields["简要说明"]) || text(fields["产品描述"]) || undefined,
+      description: text(fields["产品描述"]) || undefined,
+      image: gallery[0],
+      gallery: gallery.length ? gallery : undefined,
+      specs: buildImportedSpecs(fields),
+      moq: text(fields["大货起订量"] || fields["Q1"]) || undefined,
+      material: text(fields["产品材质"]) || undefined,
+      customization: text(fields["印刷方式"]) || undefined,
+      priceNote: formatImportedPriceNote(fields),
+      hasQuote,
+      hasImage: gallery.length > 0,
+      noImageReason: gallery.length > 0 ? undefined : "No product image in the source Base export.",
+      featured: Boolean(fields["选品"]),
+    };
+  });
+
+  const counts = new Map<string, number>();
+  const names = new Map<string, string>();
+  const firstImages = new Map<string, string>();
+  for (const product of products) {
+    counts.set(product.categorySlug, (counts.get(product.categorySlug) ?? 0) + 1);
+    names.set(product.categorySlug, product.category);
+    if (product.image && !firstImages.has(product.categorySlug)) {
+      firstImages.set(product.categorySlug, product.image);
+    }
+  }
+  const categories: Category[] = Array.from(counts.entries())
+    .map(([slug, count]) => ({
+      slug,
+      name: names.get(slug) ?? slug,
+      count,
+      image: firstImages.get(slug),
+    }))
+    .sort((a, b) => a.name.localeCompare(b.name));
+
+  const sample = getSampleSiteData();
+  const info = readLocalSiteInfo() ?? {
+    ...sample.info,
+    source: "sample" as const,
+    rawNote:
+      "Products are loaded from local Feishu Base export; company info is sample content pending source/content/imports/site-info.raw.json.",
+  };
+
+  return {
+    info,
+    products,
+    categories,
+    dataSource: "imported",
+  };
 }
 
 async function queryProducts(): Promise<Product[]> {
@@ -291,13 +502,13 @@ async function querySiteData(): Promise<SiteData | null> {
 export async function getSiteData(): Promise<SiteData> {
   if (cache) return cache;
   try {
-    cache = (await querySiteData()) ?? getSampleSiteData();
+    cache = (await querySiteData()) ?? queryLocalImportSiteData() ?? getSampleSiteData();
   } catch (error) {
     if (process.env.NODE_ENV !== "production" || process.env.DATA_ADAPTER_DEBUG === "1") {
       // eslint-disable-next-line no-console
-      console.warn("[dataAdapter] database unavailable, using local sample data:", error);
+      console.warn("[dataAdapter] database unavailable, using local import or sample data:", error);
     }
-    cache = getSampleSiteData();
+    cache = queryLocalImportSiteData() ?? getSampleSiteData();
   }
   return cache;
 }

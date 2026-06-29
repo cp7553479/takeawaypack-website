@@ -13,6 +13,7 @@ interface ProductBrowserProps {
 export default function ProductBrowser({ products, categories }: ProductBrowserProps) {
   const [active, setActive] = useState<string>("all");
   const [q, setQ] = useState("");
+  const [filtersExpanded, setFiltersExpanded] = useState(false);
 
   const filtered = useMemo(() => {
     const needle = q.trim().toLowerCase();
@@ -31,10 +32,40 @@ export default function ProductBrowser({ products, categories }: ProductBrowserP
 
   const activeName =
     active === "all" ? "All products" : categories.find((c) => c.slug === active)?.name ?? active;
+  const pinnedCategories = categories.slice(0, 12);
+  const activeCategory = categories.find((c) => c.slug === active);
+  const visibleCategories =
+    filtersExpanded || active === "all" || pinnedCategories.some((c) => c.slug === active)
+      ? filtersExpanded
+        ? categories
+        : pinnedCategories
+      : [...pinnedCategories, activeCategory].filter((c): c is Category => Boolean(c));
+  const hiddenCategoryCount = Math.max(categories.length - pinnedCategories.length, 0);
 
   return (
     <div>
-      <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+      <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+          <div>
+            <h2 className="text-base font-semibold text-slate-900">Find products</h2>
+            <p className="mt-1 text-sm text-slate-500">
+              Search by product name, material, category, or use the category filters.
+            </p>
+          </div>
+          <div className="lg:w-96">
+            <label className="sr-only" htmlFor="product-search">
+              Search products
+            </label>
+            <input
+              id="product-search"
+              className="input"
+              placeholder="Search products..."
+              value={q}
+              onChange={(e) => setQ(e.target.value)}
+            />
+          </div>
+        </div>
+
         <div className="flex flex-wrap gap-2">
           <button
             type="button"
@@ -45,7 +76,7 @@ export default function ProductBrowser({ products, categories }: ProductBrowserP
           >
             All ({products.length})
           </button>
-          {categories.map((c) => (
+          {visibleCategories.map((c) => (
             <button
               key={c.slug}
               type="button"
@@ -57,19 +88,15 @@ export default function ProductBrowser({ products, categories }: ProductBrowserP
               {c.name} ({c.count})
             </button>
           ))}
-        </div>
-
-        <div className="lg:w-72">
-          <label className="sr-only" htmlFor="product-search">
-            Search products
-          </label>
-          <input
-            id="product-search"
-            className="input"
-            placeholder="Search products…"
-            value={q}
-            onChange={(e) => setQ(e.target.value)}
-          />
+          {hiddenCategoryCount > 0 ? (
+            <button
+              type="button"
+              onClick={() => setFiltersExpanded((value) => !value)}
+              className="chip cursor-pointer border-brand-200 bg-white text-brand-800 hover:border-brand-300"
+            >
+              {filtersExpanded ? "Fewer filters" : `More filters (+${hiddenCategoryCount})`}
+            </button>
+          ) : null}
         </div>
       </div>
 
