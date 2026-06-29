@@ -43,6 +43,11 @@ export async function generateMetadata(): Promise<Metadata> {
       title,
       description,
     },
+    icons: {
+      icon: "/favicon.png",
+      shortcut: "/favicon.png",
+      apple: "/brand-logo.png",
+    },
     robots: { index: true, follow: true },
   };
 }

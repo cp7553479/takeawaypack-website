@@ -86,6 +86,20 @@ function normalizeCurrency(value: unknown) {
   return original === "US dolar" ? "US dollar" : original || undefined;
 }
 
+function normalizeListText(value: unknown): string {
+  return text(value)
+    .split(",")
+    .map((part) => part.trim())
+    .filter(Boolean)
+    .join(", ");
+}
+
+function formatQuantity(value: unknown, unit = "pcs"): string {
+  const n = intOrNull(value);
+  if (n == null) return text(value);
+  return `${n.toLocaleString()} ${unit}`;
+}
+
 function rawArray(value: unknown): unknown[] {
   return Array.isArray(value) ? value : [];
 }
@@ -105,12 +119,12 @@ function buildImportedSpecs(fields: Record<string, unknown>): ProductSpec[] {
   };
 
   add("SKU", fields["SKU"] || fields["产品编号"]);
-  add("Material", fields["产品材质"]);
+  add("Material", normalizeListText(fields["产品材质"]));
   add("Type", fields["产品类型"]);
   add("Specification", fields["产品规格"]);
-  add("Printing", fields["印刷方式"]);
+  add("Printing", normalizeListText(fields["印刷方式"]));
   add("Pieces/ctn", fields["件数/箱"]);
-  add("MOQ", fields["大货起订量"] || fields["Q1"]);
+  add("MOQ", formatQuantity(fields["大货起订量"] || fields["Q1"]));
   add("Carton L(cm)", fields["箱子尺寸 长(cm)"]);
   add("Carton W(cm)", fields["箱子尺寸 宽(cm)"]);
   add("Carton H(cm)", fields["箱子尺寸 高(cm)"]);
@@ -217,9 +231,9 @@ function queryLocalImportSiteData(): SiteData | null {
       image: gallery[0],
       gallery: gallery.length ? gallery : undefined,
       specs: buildImportedSpecs(fields),
-      moq: text(fields["大货起订量"] || fields["Q1"]) || undefined,
-      material: text(fields["产品材质"]) || undefined,
-      customization: text(fields["印刷方式"]) || undefined,
+      moq: formatQuantity(fields["大货起订量"] || fields["Q1"]) || undefined,
+      material: normalizeListText(fields["产品材质"]) || undefined,
+      customization: normalizeListText(fields["印刷方式"]) || undefined,
       priceNote: formatImportedPriceNote(fields),
       hasQuote,
       hasImage: gallery.length > 0,
