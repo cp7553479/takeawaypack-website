@@ -177,7 +177,17 @@ async function queryCategories(): Promise<Category[]> {
       c.slug,
       c.name,
       c.description,
-      c.image,
+      COALESCE(
+        c.image,
+        (
+          SELECT pm.public_path
+          FROM products cp
+          JOIN product_media pm ON pm.product_id = cp.id
+          WHERE cp.category_slug = c.slug
+          ORDER BY cp.featured DESC, cp.is_variant ASC, cp.name ASC, pm.position ASC
+          LIMIT 1
+        )
+      ) AS image,
       COUNT(p.id)::text AS count
     FROM categories c
     LEFT JOIN products p ON p.category_slug = c.slug

@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 
 import SiteFooter from "@/components/SiteFooter";
 import SiteHeader from "@/components/SiteHeader";
@@ -9,6 +9,11 @@ import "./globals.css";
 // NOTE: next/font/google is intentionally avoided so the project builds in
 // offline/sandboxed environments. The Tailwind font stack falls back to the
 // system UI. Swap in next/font for a custom typeface once network is available.
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+};
 
 export async function generateMetadata(): Promise<Metadata> {
   const { info } = await getSiteData();

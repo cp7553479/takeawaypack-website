@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
+import BrandMark from "@/components/BrandMark";
 import type { NavItem } from "@/lib/types";
 
 interface SiteHeaderProps {
@@ -28,19 +29,7 @@ export default function SiteHeader({ brandName, tagline, nav }: SiteHeaderProps)
     <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/90 backdrop-blur">
       <div className="container-page flex h-16 items-center justify-between gap-4">
         <Link href="/" className="flex items-center gap-2" aria-label={`${brandName} home`}>
-          <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-brand-600 text-sm font-bold text-white">
-            {brandName.slice(0, 2).toUpperCase()}
-          </span>
-          <span className="flex flex-col leading-tight">
-            <span className="text-base font-bold tracking-tight text-slate-900">
-              {brandName}
-            </span>
-            {tagline ? (
-              <span className="hidden text-[11px] font-medium text-slate-500 sm:block">
-                {tagline}
-              </span>
-            ) : null}
-          </span>
+          <BrandMark brandName={brandName} tagline={tagline} />
         </Link>
 
         <nav className="hidden items-center gap-1 lg:flex" aria-label="Primary">

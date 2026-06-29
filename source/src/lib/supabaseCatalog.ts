@@ -142,8 +142,12 @@ export async function querySupabaseSiteData(): Promise<SiteData | null> {
   });
 
   const productsByCategory = new Map<string, number>();
+  const firstImageByCategory = new Map<string, string>();
   for (const product of products) {
     productsByCategory.set(product.categorySlug, (productsByCategory.get(product.categorySlug) ?? 0) + 1);
+    if (product.image && !firstImageByCategory.has(product.categorySlug)) {
+      firstImageByCategory.set(product.categorySlug, product.image);
+    }
   }
 
   const categories: Category[] = categoriesRes
@@ -151,7 +155,7 @@ export async function querySupabaseSiteData(): Promise<SiteData | null> {
       slug: row.slug,
       name: row.name,
       description: row.description ?? undefined,
-      image: row.image ?? undefined,
+      image: row.image ?? firstImageByCategory.get(row.slug),
       count: productsByCategory.get(row.slug) ?? 0,
     }))
     .filter((category) => category.count > 0);

@@ -23,12 +23,12 @@ export const SAMPLE_SITE_INFO: SiteInfo = {
   tagline: "Takeaway & Food Packaging for Export",
   slogan: "Reliable takeaway packaging, built for global trade buyers.",
   description:
-    "TakeawayPack is a sample B2B showcase for takeaway and food-service packaging. This text is placeholder content pending real company data from the source Base. The site is engineered for fast product browsing and direct RFQ (request for quotation) inquiries from trade buyers worldwide.",
+    "TakeawayPack is a sample B2B showcase for takeaway and food-service packaging. This text is placeholder content pending real company data from the source Base. The site is engineered for fast product browsing and RFQ-first sourcing support for trade buyers.",
   valueProps: [
     "Custom printing & private label available",
-    "Food-grade and recyclable material options",
+    "Material options to confirm per item",
     "Export packing and consolidated shipping",
-    "Direct factory communication for RFQs",
+    "Supplier communication support for RFQs",
   ],
   contact: {
     email: "sales@example.com",
@@ -46,9 +46,9 @@ export const SAMPLE_SITE_INFO: SiteInfo = {
     "Sample sending before bulk order",
   ],
   stats: [
-    { label: "Product range", value: "100+" },
-    { label: "Export markets", value: "30+" },
-    { label: "Lead time", value: "15–35d" },
+    { label: "Product range", value: "Broad" },
+    { label: "Export support", value: "Ready" },
+    { label: "RFQ model", value: "First" },
     { label: "MOQ", value: "Flexible" },
   ],
   seo: {
