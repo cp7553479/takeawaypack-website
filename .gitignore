@@ -29,6 +29,9 @@ logs/
 # Local-only scratch
 .temp/
 source/.data/
+assets/generated/*.zip
+source/public/generated/marketing/codex-imagen-*.png
+source/public/base-products/
 
 # Keep imported source data OUT of the public repo if it is sensitive.
 # Uncomment the next line if the Feishu Base export should not be public:

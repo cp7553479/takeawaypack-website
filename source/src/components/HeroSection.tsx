@@ -60,7 +60,7 @@ export default function HeroSection({
           </ul>
         </div>
 
-        <div className="relative max-w-[358px] sm:max-w-none">
+        <div className="relative mx-auto w-full max-w-[calc(100%-1rem)] sm:max-w-none">
           <div className="relative aspect-[5/4] overflow-hidden rounded-2xl border border-slate-200 bg-slate-100 shadow-xl shadow-slate-200/70 sm:aspect-[16/11]">
             <Image
               src={imageSrc}
@@ -71,7 +71,7 @@ export default function HeroSection({
               className="object-cover"
             />
           </div>
-          <div className="relative -mt-10 ml-auto grid max-w-xl grid-cols-2 gap-3 rounded-2xl border border-slate-200 bg-white/95 p-4 shadow-lg backdrop-blur sm:grid-cols-4">
+          <div className="relative -mt-10 ml-auto grid w-full max-w-full grid-cols-2 gap-3 rounded-2xl border border-slate-200 bg-white/95 p-4 shadow-lg backdrop-blur sm:max-w-xl sm:grid-cols-4">
             {[
               { k: "Custom print", v: "brand-ready packs" },
               { k: "MOQ clarity", v: "quote by spec" },
