@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 
 import InquiryCTA from "@/components/InquiryCTA";
 import ProductCard from "@/components/ProductCard";
-import ProductImage from "@/components/ProductImage";
+import ProductGallery from "@/components/ProductGallery";
 import {
   getProductBySlug,
   getProductsByCategory,
@@ -39,6 +39,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
   const variants = await getVariantsForProduct(product);
 
   const inquiryHref = `/contact?product=${encodeURIComponent(product.name)}`;
+  const galleryImages = Array.from(new Set([product.image, ...(product.gallery ?? [])].filter(Boolean))) as string[];
 
   return (
     <>
@@ -58,26 +59,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
 
       <section className="section">
         <div className="container-page grid gap-10 lg:grid-cols-2">
-          <div>
-            <div className="relative aspect-square overflow-hidden rounded-xl border border-slate-200 bg-slate-100">
-              <ProductImage
-                src={product.image}
-                alt={product.name}
-                label={product.category}
-                sizes="(min-width: 1024px) 50vw, 100vw"
-                priority
-              />
-            </div>
-            {product.gallery && product.gallery.length > 0 ? (
-              <div className="mt-3 grid grid-cols-4 gap-3">
-                {product.gallery.slice(0, 4).map((g, i) => (
-                  <div key={i} className="relative aspect-square overflow-hidden rounded-lg border border-slate-200 bg-slate-100">
-                    <ProductImage src={g} alt={`${product.name} ${i + 1}`} label="Gallery" sizes="25vw" />
-                  </div>
-                ))}
-              </div>
-            ) : null}
-          </div>
+          <ProductGallery images={galleryImages} productName={product.name} category={product.category} />
 
           <div>
             <div className="flex flex-wrap items-center gap-2">
@@ -109,8 +91,8 @@ export default async function ProductDetailPage({ params }: PageProps) {
               <Link href={inquiryHref} className="btn-accent">
                 Request a quotation
               </Link>
-              <Link href="/contact" className="btn-outline">
-                Contact us
+              <Link href="/products" className="btn-outline">
+                Back to catalog
               </Link>
             </div>
 

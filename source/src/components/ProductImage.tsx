@@ -33,7 +33,7 @@ export default function ProductImage({
         fill
         sizes={sizes}
         priority={priority}
-        className={`object-cover ${className ?? ""}`}
+        className={`object-contain p-3 ${className ?? ""}`}
       />
     );
   }

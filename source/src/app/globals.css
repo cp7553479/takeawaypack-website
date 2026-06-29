@@ -101,6 +101,10 @@ body {
   .product-placeholder {
     @apply flex h-full w-full items-center justify-center bg-gradient-to-br from-brand-50 via-white to-kraft-50 text-center;
   }
+
+  .gallery-nav-button {
+    @apply inline-flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white/90 text-slate-800 shadow-sm backdrop-blur transition hover:border-brand-300 hover:text-brand-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2;
+  }
 }
 
 @layer utilities {

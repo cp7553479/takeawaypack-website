@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import BrandMark from "@/components/BrandMark";
 import type { Category, SiteInfo } from "@/lib/types";
 
 interface SiteFooterProps {
@@ -14,12 +15,7 @@ export default function SiteFooter({ info, categories }: SiteFooterProps) {
     <footer className="border-t border-slate-200 bg-slate-50">
       <div className="container-page grid gap-10 py-12 sm:grid-cols-2 lg:grid-cols-4">
         <div className="sm:col-span-2 lg:col-span-1">
-          <div className="flex items-center gap-2">
-            <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-brand-600 text-sm font-bold text-white">
-              {info.brandName.slice(0, 2).toUpperCase()}
-            </span>
-            <span className="text-base font-bold text-slate-900">{info.brandName}</span>
-          </div>
+          <BrandMark brandName={info.brandName} compact />
           {info.tagline ? (
             <p className="mt-3 text-sm text-slate-600">{info.tagline}</p>
           ) : null}
@@ -60,6 +56,11 @@ export default function SiteFooter({ info, categories }: SiteFooterProps) {
             <li>
               <Link href="/products" className="text-slate-600 transition hover:text-brand-700">
                 Product Catalog
+              </Link>
+            </li>
+            <li>
+              <Link href="/blog" className="text-slate-600 transition hover:text-brand-700">
+                Blog &amp; Buyer Guides
               </Link>
             </li>
             <li>

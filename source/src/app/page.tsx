@@ -8,6 +8,7 @@ import ProcessSteps from "@/components/ProcessSteps";
 import ProductCard from "@/components/ProductCard";
 import StatsBar from "@/components/StatsBar";
 import TrustSection from "@/components/TrustSection";
+import { BLOG_POSTS } from "@/lib/blogPosts";
 import { getFeaturedProducts, getSiteData } from "@/lib/dataAdapter";
 import { getMediaAssetUrl } from "@/lib/mediaAssets";
 
@@ -146,6 +147,39 @@ export default async function HomePage() {
 
       <TrustSection info={data.info} />
       <ProcessSteps info={data.info} />
+
+      <section className="section bg-slate-50">
+        <div className="container-page">
+          <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+            <div className="max-w-2xl">
+              <span className="eyebrow">Blog</span>
+              <h2 className="h-section mt-2">Buyer guides for better packaging RFQs</h2>
+              <p className="mt-3 text-sm leading-relaxed text-slate-600 sm:text-base">
+                Reference articles help buyers prepare product specs, sample checks, and
+                material questions before contacting the sales team.
+              </p>
+            </div>
+            <Link href="/blog" className="btn-outline self-start sm:self-auto">
+              View all guides
+            </Link>
+          </div>
+          <div className="mt-8 grid gap-5 md:grid-cols-3">
+            {BLOG_POSTS.slice(0, 3).map((post) => (
+              <article key={post.slug} className="card card-hover p-6">
+                <span className="chip border-brand-100 bg-brand-50 text-brand-800">
+                  {post.category}
+                </span>
+                <h3 className="mt-4 text-lg font-bold leading-snug text-slate-950">
+                  <Link href={`/blog/${post.slug}`} className="hover:text-brand-700">
+                    {post.title}
+                  </Link>
+                </h3>
+                <p className="mt-3 text-sm leading-relaxed text-slate-600">{post.excerpt}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
 
       <section className="section bg-white">
         <div className="container-page grid items-center gap-10 lg:grid-cols-[1.05fr_0.95fr]">

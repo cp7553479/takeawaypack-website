@@ -27,7 +27,7 @@ export default function SiteHeader({ brandName, tagline, nav }: SiteHeaderProps)
 
   return (
     <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/90 backdrop-blur">
-      <div className="container-page flex h-16 items-center justify-between gap-4">
+      <div className="container-page flex h-16 items-center justify-between gap-3">
         <Link href="/" className="flex items-center gap-2" aria-label={`${brandName} home`}>
           <BrandMark brandName={brandName} tagline={tagline} />
         </Link>
@@ -48,7 +48,7 @@ export default function SiteHeader({ brandName, tagline, nav }: SiteHeaderProps)
           ))}
         </nav>
 
-        <div className="hidden items-center gap-2 lg:flex">
+        <div className="hidden items-center gap-2 xl:flex">
           <Link href="/contact" className="btn-primary">
             Get a Quote
           </Link>

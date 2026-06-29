@@ -52,6 +52,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const nav = data.info.nav ?? [
     { label: "Home", href: "/" },
     { label: "Products", href: "/products" },
+    { label: "Blog", href: "/blog" },
     { label: "About", href: "/about" },
     { label: "Contact", href: "/contact" },
   ];

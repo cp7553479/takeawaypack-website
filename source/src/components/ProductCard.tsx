@@ -13,13 +13,13 @@ export default function ProductCard({ product }: ProductCardProps) {
     <article className="card card-hover flex flex-col overflow-hidden">
       <Link
         href={`/products/${product.slug}`}
-        className="relative block aspect-[4/3] overflow-hidden bg-slate-100"
+        className="relative block aspect-[16/10] overflow-hidden bg-white"
         aria-label={product.name}
       >
         <ProductImage src={product.image} alt={product.name} label={product.category} />
       </Link>
 
-      <div className="flex flex-1 flex-col p-4">
+      <div className="flex flex-1 flex-col p-4 pt-3">
         <div className="flex items-center justify-between gap-2">
           <Link
             href={`/categories/${product.categorySlug}`}
@@ -69,8 +69,8 @@ export default function ProductCard({ product }: ProductCardProps) {
           <Link href={`/products/${product.slug}`} className="btn-outline flex-1">
             Details
           </Link>
-          <Link href={inquiryHref} className="btn-primary flex-1">
-            Inquire
+          <Link href={inquiryHref} className="btn-primary flex-1" aria-label={`Request a quote for ${product.name}`}>
+            Quote
           </Link>
         </div>
       </div>
