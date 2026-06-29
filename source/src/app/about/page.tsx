@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 
 import InquiryCTA from "@/components/InquiryCTA";
 import ProcessSteps from "@/components/ProcessSteps";
@@ -28,6 +29,15 @@ export default function AboutPage() {
       <section className="section">
         <div className="container-page grid gap-10 lg:grid-cols-3">
           <div className="lg:col-span-2">
+            <div className="relative mb-8 aspect-[16/9] overflow-hidden rounded-md border border-slate-200 bg-slate-100 shadow-sm">
+              <Image
+                src="/generated/capabilities-quality-control.png"
+                alt="Packaging samples, measuring tools, and export cartons prepared for quality control"
+                fill
+                sizes="(min-width: 1024px) 60vw, 100vw"
+                className="object-cover"
+              />
+            </div>
             <h2 className="text-xl font-bold text-slate-900">Company overview</h2>
             <p className="mt-3 leading-relaxed text-slate-600">{info.description}</p>
 

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 import type { SiteInfo } from "@/lib/types";
 
@@ -39,18 +40,30 @@ export default function HeroSection({ info }: { info: SiteInfo }) {
         </div>
 
         <div className="relative">
-          <div className="grid grid-cols-2 gap-4">
-            {[
-              { k: "Food-grade", v: "material options" },
-              { k: "Custom print", v: "& private label" },
-              { k: "Export packing", v: "& consolidation" },
-              { k: "Direct RFQ", v: "to the factory" },
-            ].map((b) => (
-              <div key={b.k} className="card flex flex-col gap-1 p-5">
-                <span className="text-lg font-bold text-brand-700">{b.k}</span>
-                <span className="text-sm text-slate-600">{b.v}</span>
+          <div className="relative aspect-[16/10] overflow-hidden rounded-md border border-slate-200 bg-white shadow-sm">
+            <Image
+              src="/generated/hero-takeaway-packaging.png"
+              alt="Assorted takeaway food packaging samples prepared for export"
+              fill
+              priority
+              sizes="(min-width: 1024px) 48vw, 100vw"
+              className="object-cover"
+            />
+            <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-950/70 to-transparent p-5">
+              <div className="grid grid-cols-2 gap-3 text-white sm:grid-cols-4 lg:grid-cols-2">
+                {[
+                  { k: "Food-grade", v: "material options" },
+                  { k: "Custom print", v: "& private label" },
+                  { k: "Export packing", v: "& consolidation" },
+                  { k: "Direct RFQ", v: "to the factory" },
+                ].map((b) => (
+                  <div key={b.k}>
+                    <span className="block text-sm font-bold">{b.k}</span>
+                    <span className="block text-xs text-white/75">{b.v}</span>
+                  </div>
+                ))}
               </div>
-            ))}
+            </div>
           </div>
         </div>
       </div>

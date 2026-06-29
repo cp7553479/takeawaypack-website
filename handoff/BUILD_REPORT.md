@@ -24,6 +24,13 @@ Pages / routes:
   `?product=`.
 - **Thank-you**, custom **404**, `sitemap.xml`, `robots.txt`.
 
+Generated imagery:
+- Image-generation tool assets were added under `source/public/generated/`.
+- Homepage now uses a generated packaging hero image.
+- Fallback product/category cards now use generated category imagery.
+- About page now uses a generated quality-control / export-preparation image.
+- Full asset list: `assets/generated/ASSET_REPORT.md`.
+
 Data approach:
 - **`src/lib/dataAdapter.ts`** is the single source of truth. It reads the
   Feishu Base exports (`content/imports/site-info.raw.json`,
@@ -90,6 +97,7 @@ Existing blocked-status files (`IMPORT_REPORT.md`, `content/data-contract.md`,
 | `npm run lint` | PASS — no ESLint warnings or errors |
 | `npm run typecheck` | PASS — `tsc --noEmit` |
 | `npm run build` | PASS — production build, 33 static pages generated |
+| image asset integration build | PASS — `npm run lint`, `npm run typecheck`, and `npm run build` after image integration |
 
 **Verification status:** PASS. During verification, two TypeScript issues in
 `dataAdapter.ts` were fixed: field-candidate arrays now accept readonly tuples,

@@ -398,26 +398,39 @@ const PRODUCT_SEEDS: ProductSeed[] = [
   },
 ];
 
+const CATEGORY_IMAGE_MAP: Record<string, string> = {
+  "kraft-paper-bags": "/generated/product-kraft-packaging.png",
+  "food-containers": "/generated/product-food-containers.png",
+  "paper-cups": "/generated/product-paper-cups.png",
+  "compartment-trays": "/generated/product-compartment-trays.png",
+  "sauce-cups": "/generated/product-sauce-cups.png",
+  cutlery: "/generated/product-cutlery.png",
+};
+
 export function getSampleProducts(): Product[] {
-  return PRODUCT_SEEDS.map((p, i) => ({
-    source: "sample" as const,
-    id: `sample-${i + 1}`,
-    slug: slugify(`${p.name}`),
-    name: p.name,
-    category: p.category,
-    categorySlug: slugify(p.category),
-    summary: p.summary,
-    description: p.description,
-    features: p.features,
-    specs: p.specs,
-    moq: p.moq,
-    material: p.material,
-    customization: p.customization,
-    leadTime: p.leadTime,
-    useCases: p.useCases,
-    priceNote: p.priceNote,
-    featured: p.featured,
-  }));
+  return PRODUCT_SEEDS.map((p, i) => {
+    const categorySlug = slugify(p.category);
+    return {
+      source: "sample" as const,
+      id: `sample-${i + 1}`,
+      slug: slugify(`${p.name}`),
+      name: p.name,
+      category: p.category,
+      categorySlug,
+      summary: p.summary,
+      description: p.description,
+      features: p.features,
+      image: CATEGORY_IMAGE_MAP[categorySlug],
+      specs: p.specs,
+      moq: p.moq,
+      material: p.material,
+      customization: p.customization,
+      leadTime: p.leadTime,
+      useCases: p.useCases,
+      priceNote: p.priceNote,
+      featured: p.featured,
+    };
+  });
 }
 
 export function getSampleCategories(): Category[] {
@@ -444,6 +457,7 @@ export function getSampleCategories(): Category[] {
       slug,
       name: names.get(slug) ?? slug,
       description: descriptions[slug],
+      image: CATEGORY_IMAGE_MAP[slug],
       count: counts.get(slug) ?? 0,
     }));
 }

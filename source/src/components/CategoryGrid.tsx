@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 import type { Category } from "@/lib/types";
 
@@ -24,6 +25,17 @@ export default function CategoryGrid({ categories }: { categories: Category[] })
               href={`/categories/${c.slug}`}
               className="card card-hover group flex flex-col justify-between p-5"
             >
+              {c.image ? (
+                <div className="relative mb-4 aspect-[4/3] overflow-hidden rounded-md bg-slate-100">
+                  <Image
+                    src={c.image}
+                    alt={`${c.name} packaging samples`}
+                    fill
+                    sizes="(min-width: 1024px) 20vw, (min-width: 640px) 33vw, 50vw"
+                    className="object-cover transition duration-300 group-hover:scale-105"
+                  />
+                </div>
+              ) : null}
               <div>
                 <h3 className="text-base font-semibold text-slate-900 group-hover:text-brand-700">
                   {c.name}

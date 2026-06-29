@@ -10,10 +10,10 @@ interface ProductImageProps {
 }
 
 /**
- * Renders a real product image when an http(s) URL is available, otherwise an
- * honest gradient placeholder. We never fabricate product photos, and Feishu
- * attachment tokens (which are not usable URLs) fall through to the placeholder
- * until the asset import step downloads them into /public.
+ * Renders a real product image when an http(s) URL or local public path is
+ * available, otherwise an honest gradient placeholder. Feishu attachment tokens
+ * (which are not usable URLs) fall through to the placeholder until the asset
+ * import step downloads them into /public.
  */
 export default function ProductImage({
   src,
@@ -23,9 +23,10 @@ export default function ProductImage({
   priority,
   className,
 }: ProductImageProps) {
-  const isUrl = typeof src === "string" && /^https?:\/\//i.test(src);
+  const isRenderableImage =
+    typeof src === "string" && (/^https?:\/\//i.test(src) || src.startsWith("/"));
 
-  if (isUrl) {
+  if (isRenderableImage) {
     return (
       <Image
         src={src as string}
