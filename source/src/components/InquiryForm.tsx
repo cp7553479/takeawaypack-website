@@ -32,7 +32,9 @@ export default function InquiryForm({ defaultProduct, sourcePage, mode }: Inquir
     country: "",
     product: defaultProduct ?? "",
     quantity: "",
-    message: defaultProduct ? `I'm interested in ${defaultProduct}. Please confirm pricing, MOQ, and lead time for my required specification.` : "",
+    message: defaultProduct
+      ? `I'm interested in ${defaultProduct}. Please confirm pricing, MOQ, and timing for my required specification. My material/size, customization, destination, and documentation needs are:`
+      : "",
   });
   const [errors, setErrors] = useState<FieldErrors>({});
   const [status, setStatus] = useState<SubmitResult | null>(null);
@@ -206,6 +208,7 @@ export default function InquiryForm({ defaultProduct, sourcePage, mode }: Inquir
           id="product"
           name="product"
           className="input"
+          placeholder="Product name, SKU, or category"
           value={form.product}
           onChange={(e) => update("product", e.target.value)}
         />
@@ -220,6 +223,7 @@ export default function InquiryForm({ defaultProduct, sourcePage, mode }: Inquir
           name="message"
           rows={5}
           className={`input ${errors.message ? "input-error" : ""}`}
+          placeholder="Share product size/capacity, material, quantity, customization, destination country/port, sample needs, and any food-contact or sustainability documents required."
           value={form.message}
           onChange={(e) => update("message", e.target.value)}
           required
