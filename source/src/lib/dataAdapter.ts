@@ -182,13 +182,13 @@ function toLines(value: unknown): string[] {
     .filter(Boolean);
 }
 
-// Collect every http(s) image URL anywhere inside an attachment/text field.
+// Collect every renderable image URL/path anywhere inside an attachment/text field.
 function toImageUrls(value: unknown): string[] {
   const urls: string[] = [];
   const collect = (v: unknown) => {
     if (v == null) return;
     if (typeof v === "string") {
-      const m = v.match(/https?:\/\/\S+\.(?:png|jpe?g|webp|gif|svg)(?:\?\S*)?/i);
+      const m = v.match(/(?:https?:\/\/|\/)\S+\.(?:png|jpe?g|webp|gif|svg)(?:\?\S*)?/i);
       if (m) urls.push(m[0]);
       return;
     }
@@ -261,21 +261,22 @@ const SITE_FIELDS = {
 } as const;
 
 const PRODUCT_FIELDS = {
-  id: ["record id", "record_id", "id", "recordid"],
+  id: ["record id", "record_id", "id", "recordid", "产品编号", "sku"],
+  sku: ["sku", "产品编号", "product code", "item code"],
   name: ["product name", "name", "产品名称", "title", "名称", "model", "型号", "sku", "商品名称", "item name", "product"],
-  category: ["category", "categories", "分类", "类别", "产品分类", "series", "系列", "product type", "type", "类型"],
-  summary: ["summary", "short description", "简短描述", "简介", "副标题", "subheading", "一句话介绍", "卖点简介", "highlight"],
+  category: ["category", "categories", "分类", "类别", "产品分类", "series", "系列", "product type", "type", "类型", "产品类型"],
+  summary: ["summary", "short description", "简短描述", "简介", "副标题", "subheading", "一句话介绍", "卖点简介", "highlight", "简要说明"],
   description: ["description", "details", "详情", "产品详情", "描述", "content", "正文", "产品介绍", "introduction", "产品描述"],
-  features: ["features", "特点", "产品特点", "highlights", "亮点", "selling points", "卖点", "advantages", "优势", "特性"],
-  image: ["main image", "image", "主图", "图片", "photo", "picture", "封面", "cover", "thumbnail", "thumb", "image url", "图片链接", "product image"],
-  gallery: ["gallery", "images", "图册", "附加图片", "more images", "details images", "细节图", "相册", "gallery images"],
-  material: ["material", "材质", "材料", "raw material", "材料材质"],
-  size: ["size", "尺寸", "规格", "dimension", "dimensions", "specifications", "规格尺寸"],
+  features: ["features", "特点", "产品特点", "highlights", "亮点", "selling points", "卖点", "advantages", "优势", "特性", "产品关键词"],
+  image: ["main image", "image", "主图", "商品主图", "白底图", "图片", "photo", "picture", "封面", "cover", "thumbnail", "thumb", "image url", "图片链接", "product image"],
+  gallery: ["gallery", "images", "图册", "附加图片", "more images", "details images", "细节图", "相册", "gallery images", "参考图片", "白底图", "商品主图"],
+  material: ["material", "材质", "材料", "raw material", "材料材质", "产品材质"],
+  size: ["size", "尺寸", "规格", "dimension", "dimensions", "specifications", "规格尺寸", "产品规格"],
   capacity: ["capacity", "容量", "容积", "volume", "规格容量"],
   color: ["color", "颜色", "colour", "颜色款式"],
-  moq: ["moq", "minimum order quantity", "minimum order", "起订量", "起订", "最低订购量", "min order", "起批量"],
-  packaging: ["packaging", "包装", "packing", "包装规格", "包装方式"],
-  customization: ["customization", "custom", "定制", "oem", "odm", "logo", "印刷", "印刷定制", "custom print", "定制服务"],
+  moq: ["moq", "minimum order quantity", "minimum order", "起订量", "起订", "最低订购量", "min order", "起批量", "大货起订量", "Q1"],
+  packaging: ["packaging", "包装", "packing", "包装规格", "包装方式", "件数/箱"],
+  customization: ["customization", "custom", "定制", "oem", "odm", "logo", "印刷", "印刷定制", "custom print", "定制服务", "印刷方式"],
   leadTime: ["lead time", "leadtime", "delivery time", "交期", "交货期", "生产周期", "delivery", "出货期", "production time", "货期"],
   price: ["price", "fob", "exw", "价格", "报价", "单价", "fob price", "unit price", "reference price", "参考价", "price term", "trade term"],
   certifications: ["certification", "certificates", "证书", "认证", "cert", "资质", "检测报告"],
@@ -356,6 +357,7 @@ function mapProducts(records: Record<string, unknown>[]): Product[] {
       const material = toText(pickField(fields, PRODUCT_FIELDS.material));
       const color = toText(pickField(fields, PRODUCT_FIELDS.color));
       const packaging = toText(pickField(fields, PRODUCT_FIELDS.packaging));
+      const sku = toText(pickField(fields, PRODUCT_FIELDS.sku));
       const moq = toText(pickField(fields, PRODUCT_FIELDS.moq));
       const customization = toText(pickField(fields, PRODUCT_FIELDS.customization));
       const leadTime = toText(pickField(fields, PRODUCT_FIELDS.leadTime));
@@ -366,6 +368,7 @@ function mapProducts(records: Record<string, unknown>[]): Product[] {
       const gallery = toImageUrls(pickField(fields, PRODUCT_FIELDS.gallery));
 
       const specs: ProductSpec[] = [];
+      if (sku) specs.push({ label: "SKU", value: sku });
       if (material) specs.push({ label: "Material", value: material });
       if (size) specs.push({ label: "Size", value: size });
       if (capacity) specs.push({ label: "Capacity", value: capacity });
