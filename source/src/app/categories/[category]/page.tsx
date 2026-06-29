@@ -10,12 +10,12 @@ interface PageProps {
   params: { category: string };
 }
 
-export function generateStaticParams() {
-  return getCategories().map((c) => ({ category: c.slug }));
+export async function generateStaticParams() {
+  return (await getCategories()).map((c) => ({ category: c.slug }));
 }
 
-export function generateMetadata({ params }: PageProps): Metadata {
-  const cat = getCategories().find((c) => c.slug === params.category);
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const cat = (await getCategories()).find((c) => c.slug === params.category);
   if (!cat) return { title: "Category not found" };
   return {
     title: `${cat.name} — Takeaway Packaging`,
@@ -23,10 +23,10 @@ export function generateMetadata({ params }: PageProps): Metadata {
   };
 }
 
-export default function CategoryPage({ params }: PageProps) {
-  const cat = getCategories().find((c) => c.slug === params.category);
+export default async function CategoryPage({ params }: PageProps) {
+  const cat = (await getCategories()).find((c) => c.slug === params.category);
   if (!cat) notFound();
-  const products = getProductsByCategory(params.category);
+  const products = await getProductsByCategory(params.category);
   if (products.length === 0) notFound();
 
   return (

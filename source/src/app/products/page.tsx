@@ -11,9 +11,9 @@ export const metadata: Metadata = {
     "Browse the full catalog of takeaway and food-service packaging. Filter by category and request a quotation on any product.",
 };
 
-export default function ProductsPage() {
-  const products = getProducts();
-  const categories = getCategories();
+export default async function ProductsPage() {
+  const products = await getProducts();
+  const categories = await getCategories();
 
   return (
     <>
@@ -42,7 +42,7 @@ export default function ProductsPage() {
       </section>
 
       <InquiryCTA />
-      {getProducts().some((p) => p.source === "sample") ? <SampleNotice /> : null}
+      {products.some((p) => p.source === "sample") ? <SampleNotice /> : null}
     </>
   );
 }

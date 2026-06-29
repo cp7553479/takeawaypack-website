@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 import InquiryForm from "@/components/InquiryForm";
 import { getSiteData } from "@/lib/dataAdapter";
-import { isSupabaseConfigured } from "@/lib/supabase";
+import { isVercelPostgresConfigured } from "@/lib/inquiry";
 
 export const metadata: Metadata = {
   title: "Contact & Request Inquiry (RFQ)",
@@ -14,10 +14,10 @@ interface PageProps {
   searchParams: { product?: string };
 }
 
-export default function ContactPage({ searchParams }: PageProps) {
-  const { info } = getSiteData();
+export default async function ContactPage({ searchParams }: PageProps) {
+  const { info } = await getSiteData();
   const product = searchParams.product?.trim() ? searchParams.product.trim() : undefined;
-  const mode = isSupabaseConfigured() ? "supabase" : "demo";
+  const mode = isVercelPostgresConfigured() ? "vercel-postgres" : "demo";
 
   return (
     <>
@@ -91,9 +91,9 @@ export default function ContactPage({ searchParams }: PageProps) {
             <div className="card border-kraft-200 bg-kraft-50 p-6">
               <h2 className="text-sm font-semibold text-kraft-900">Inquiry storage</h2>
               <p className="mt-2 text-sm text-kraft-800">
-                {mode === "supabase"
-                  ? "Submissions are saved to our Supabase database and our team will follow up by email."
-                  : "Demo mode: inquiries validate here but are not saved until Supabase is configured."}
+                {mode === "vercel-postgres"
+                  ? "Submissions are saved to the website database and our team will follow up by email."
+                  : "Demo mode: inquiries validate here but are not saved until the website database is configured."}
               </p>
             </div>
           </aside>

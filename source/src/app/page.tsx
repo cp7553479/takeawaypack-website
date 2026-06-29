@@ -7,9 +7,9 @@ import StatsBar from "@/components/StatsBar";
 import TrustSection from "@/components/TrustSection";
 import { getFeaturedProducts, getSiteData } from "@/lib/dataAdapter";
 
-export default function HomePage() {
-  const data = getSiteData();
-  const featured = getFeaturedProducts(6);
+export default async function HomePage() {
+  const data = await getSiteData();
+  const featured = await getFeaturedProducts(6);
 
   return (
     <>

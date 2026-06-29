@@ -11,7 +11,7 @@ import "./globals.css";
 // system UI. Swap in next/font for a custom typeface once network is available.
 
 export async function generateMetadata(): Promise<Metadata> {
-  const { info } = getSiteData();
+  const { info } = await getSiteData();
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") || "http://localhost:3000";
   const title = info.seo?.title ?? `${info.brandName} — Takeaway & Food Packaging | B2B Inquiry`;
   const description =
@@ -42,8 +42,8 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
-  const data = getSiteData();
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const data = await getSiteData();
   const nav = data.info.nav ?? [
     { label: "Home", href: "/" },
     { label: "Products", href: "/products" },

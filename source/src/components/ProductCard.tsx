@@ -57,6 +57,14 @@ export default function ProductCard({ product }: ProductCardProps) {
           ) : null}
         </dl>
 
+        <div className="mt-3 flex flex-wrap gap-2 text-xs">
+          <span className="chip border-brand-100 bg-brand-50 text-brand-800">
+            {product.hasQuote === false ? "Contact for quote" : product.priceNote ?? "Contact for quote"}
+          </span>
+          {product.variantCount ? <span className="chip">{product.variantCount} specs</span> : null}
+          {product.hasImage === false ? <span className="chip">No image</span> : null}
+        </div>
+
         <div className="mt-4 flex items-center gap-2 pt-1">
           <Link href={`/products/${product.slug}`} className="btn-outline flex-1">
             Details

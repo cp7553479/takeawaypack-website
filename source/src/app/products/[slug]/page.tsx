@@ -9,18 +9,19 @@ import {
   getProductBySlug,
   getProductsByCategory,
   getProducts,
+  getVariantsForProduct,
 } from "@/lib/dataAdapter";
 
 interface PageProps {
   params: { slug: string };
 }
 
-export function generateStaticParams() {
-  return getProducts().map((p) => ({ slug: p.slug }));
+export async function generateStaticParams() {
+  return (await getProducts()).map((p) => ({ slug: p.slug }));
 }
 
-export function generateMetadata({ params }: PageProps): Metadata {
-  const product = getProductBySlug(params.slug);
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const product = await getProductBySlug(params.slug);
   if (!product) return { title: "Product not found" };
   return {
     title: product.name,
@@ -28,13 +29,14 @@ export function generateMetadata({ params }: PageProps): Metadata {
   };
 }
 
-export default function ProductDetailPage({ params }: PageProps) {
-  const product = getProductBySlug(params.slug);
+export default async function ProductDetailPage({ params }: PageProps) {
+  const product = await getProductBySlug(params.slug);
   if (!product) notFound();
 
-  const related = getProductsByCategory(product.categorySlug)
+  const related = (await getProductsByCategory(product.categorySlug))
     .filter((p) => p.slug !== product.slug)
     .slice(0, 3);
+  const variants = await getVariantsForProduct(product);
 
   const inquiryHref = `/contact?product=${encodeURIComponent(product.name)}`;
 
@@ -99,11 +101,9 @@ export default function ProductDetailPage({ params }: PageProps) {
               {product.customization ? <SpecItem label="Customization" value={product.customization} /> : null}
             </dl>
 
-            {product.priceNote ? (
-              <p className="mt-3 text-sm text-slate-500">{product.priceNote}</p>
-            ) : (
-              <p className="mt-3 text-sm text-slate-500">Pricing: contact us for an FOB quotation based on your specs and quantity.</p>
-            )}
+            <p className="mt-3 text-sm text-slate-500">
+              {product.hasQuote === false ? "Contact for quote" : product.priceNote ?? "Contact for quote"}
+            </p>
 
             <div className="mt-6 flex flex-wrap gap-3">
               <Link href={inquiryHref} className="btn-accent">
@@ -183,6 +183,19 @@ export default function ProductDetailPage({ params }: PageProps) {
                 </table>
               </div>
             ) : null}
+          </div>
+        </section>
+      ) : null}
+
+      {variants.length > 0 ? (
+        <section className="section">
+          <div className="container-page">
+            <h2 className="text-xl font-bold text-slate-900">Available specifications</h2>
+            <div className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              {variants.map((variant) => (
+                <ProductCard key={variant.id} product={variant} />
+              ))}
+            </div>
           </div>
         </section>
       ) : null}

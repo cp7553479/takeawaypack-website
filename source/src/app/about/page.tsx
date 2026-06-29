@@ -11,8 +11,8 @@ export const metadata: Metadata = {
     "Company overview and packaging capabilities for takeaway and food-service export buyers.",
 };
 
-export default function AboutPage() {
-  const { info } = getSiteData();
+export default async function AboutPage() {
+  const { info } = await getSiteData();
 
   return (
     <>

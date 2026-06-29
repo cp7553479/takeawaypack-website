@@ -1,10 +1,8 @@
+import { sql } from "@vercel/postgres";
 import { z } from "zod";
 
-import { getSupabaseServer, getSupabaseEnv } from "@/lib/supabase";
 import type { InquiryPayload, InquiryResult } from "@/lib/types";
 
-// Public-facing inquiry schema. Email is the only hard requirement so the
-// sales team can reply; everything else is optional but encouraged.
 export const inquirySchema = z.object({
   name: z.string().trim().min(1, "Please enter your name.").max(120),
   company: z.string().trim().max(160).optional().or(z.literal("")),
@@ -24,11 +22,10 @@ export const inquirySchema = z.object({
 
 export type InquiryInput = z.infer<typeof inquirySchema>;
 
-/**
- * Persist an inquiry. When Supabase is configured, inserts into the
- * `inquiries` table. Otherwise runs in "demo mode": validates and returns the
- * payload (and logs it server-side) so the form is fully testable locally.
- */
+export function isVercelPostgresConfigured(): boolean {
+  return Boolean(process.env.POSTGRES_URL || process.env.DATABASE_URL);
+}
+
 export async function submitInquiry(payload: InquiryPayload): Promise<InquiryResult> {
   const parsed = inquirySchema.safeParse(payload);
   if (!parsed.success) {
@@ -39,17 +36,14 @@ export async function submitInquiry(payload: InquiryPayload): Promise<InquiryRes
     }
     return {
       ok: false,
-      mode: getSupabaseEnv().configured ? "supabase" : "demo",
+      mode: isVercelPostgresConfigured() ? "vercel-postgres" : "demo",
       message: "Please correct the highlighted fields.",
       errors,
     };
   }
 
   const data = parsed.data;
-  const env = getSupabaseEnv();
-
-  // --- Demo mode (no Supabase credentials) ---------------------------------
-  if (!env.configured) {
+  if (!isVercelPostgresConfigured()) {
     if (typeof console !== "undefined") {
       // eslint-disable-next-line no-console
       console.info("[inquiry:demo] inquiry received (not persisted):", {
@@ -63,58 +57,38 @@ export async function submitInquiry(payload: InquiryPayload): Promise<InquiryRes
       ok: true,
       mode: "demo",
       message:
-        "Demo mode: your inquiry was validated successfully but not saved (Supabase is not configured).",
+        "Demo mode: your inquiry was validated successfully but not saved because the website database is not configured.",
     };
   }
 
-  // --- Supabase mode -------------------------------------------------------
-  const supabase = getSupabaseServer();
-  if (!supabase) {
+  try {
+    const { rows } = await sql<{ id: string }>`
+      INSERT INTO inquiries
+        (name, company, email, phone, country, product, quantity, message, source_page, status)
+      VALUES
+        (${data.name}, ${normalize(data.company)}, ${data.email}, ${normalize(data.phone)},
+         ${normalize(data.country)}, ${normalize(data.product)}, ${normalize(data.quantity)},
+         ${data.message}, ${normalize(data.source)}, 'new')
+      RETURNING id::text
+    `;
+
     return {
-      ok: false,
-      mode: "demo",
-      message: "Database client unavailable. Please retry or contact us directly.",
+      ok: true,
+      mode: "vercel-postgres",
+      message: "Thank you — your inquiry has been received. Our team will reply shortly.",
+      id: rows[0]?.id,
     };
-  }
-
-  const row = {
-    name: data.name,
-    company: normalize(data.company),
-    email: data.email,
-    phone: normalize(data.phone),
-    country: normalize(data.country),
-    product: normalize(data.product),
-    quantity: normalize(data.quantity),
-    message: data.message,
-    source_page: normalize(data.source),
-    status: "new",
-    // created_at is set by the DB default
-  };
-
-  const { data: inserted, error } = await supabase
-    .from("inquiries")
-    .insert(row)
-    .select("id")
-    .single();
-
-  if (error) {
+  } catch (error) {
     if (typeof console !== "undefined") {
       // eslint-disable-next-line no-console
-      console.error("[inquiry:supabase] insert failed:", error.message);
+      console.error("[inquiry:postgres] insert failed:", error);
     }
     return {
       ok: false,
-      mode: "supabase",
+      mode: "vercel-postgres",
       message: "We could not save your inquiry right now. Please try again or email us directly.",
     };
   }
-
-  return {
-    ok: true,
-    mode: "supabase",
-    message: "Thank you — your inquiry has been received. Our team will reply shortly.",
-    id: inserted?.id ? String(inserted.id) : undefined,
-  };
 }
 
 function normalize(v: string | undefined): string | null {

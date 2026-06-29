@@ -5,8 +5,8 @@ import { useEffect, useState, type FormEvent } from "react";
 interface InquiryFormProps {
   defaultProduct?: string;
   sourcePage?: string;
-  /** "supabase" if configured, else "demo". Rendered by the server. */
-  mode?: "supabase" | "demo";
+  /** "vercel-postgres" if configured, else "demo". Rendered by the server. */
+  mode?: "vercel-postgres" | "supabase" | "demo";
 }
 
 interface FieldErrors {
@@ -18,7 +18,7 @@ interface FieldErrors {
 
 interface SubmitResult {
   ok: boolean;
-  mode: "supabase" | "demo";
+  mode: "vercel-postgres" | "supabase" | "demo";
   message: string;
   errors?: Record<string, string>;
 }
@@ -38,8 +38,8 @@ export default function InquiryForm({ defaultProduct, sourcePage, mode }: Inquir
   const [status, setStatus] = useState<SubmitResult | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
-  // Surface the live mode (supabase vs demo) if the server didn't pass it.
-  const [liveMode, setLiveMode] = useState<"supabase" | "demo" | null>(mode ?? null);
+  // Surface the live mode if the server didn't pass it.
+  const [liveMode, setLiveMode] = useState<"vercel-postgres" | "supabase" | "demo" | null>(mode ?? null);
   useEffect(() => {
     if (mode) return;
     fetch("/api/inquiry")

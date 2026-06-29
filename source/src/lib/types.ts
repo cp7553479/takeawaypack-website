@@ -65,6 +65,8 @@ export interface Product {
   source: DataSource;
   /** Stable internal id (derived from record id or slug). */
   id: string;
+  baseRecordId?: string;
+  parentBaseRecordId?: string;
   slug: string;
   name: string;
   category: string;
@@ -83,6 +85,11 @@ export interface Product {
   certifications?: string[];
   useCases?: string[];
   priceNote?: string;
+  hasQuote?: boolean;
+  hasImage?: boolean;
+  noImageReason?: string;
+  isVariant?: boolean;
+  variantCount?: number;
   featured?: boolean;
 }
 
@@ -117,7 +124,7 @@ export interface InquiryPayload {
 
 export interface InquiryResult {
   ok: boolean;
-  mode: "supabase" | "demo";
+  mode: "vercel-postgres" | "supabase" | "demo";
   message: string;
   id?: string;
   errors?: Record<string, string>;
