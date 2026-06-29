@@ -75,11 +75,13 @@ Run from `.temp/takeawaypack-shadcn-spike/source`:
 - `npm run typecheck` passed.
 - `npm run lint` passed with no warnings or errors.
 - `npm run build` passed and generated 359 pages.
+- Preliminary screenshots were generated locally under `.temp/takeawaypack-shadcn-spike/screenshots`.
+- Spot checks covered desktop home, desktop product detail, and mobile products; no blank page or broken render was observed.
 
 ## Remaining risks
 
 - This is a spike branch, not yet merged into `main`.
-- Visual QA screenshots still need to be taken before merge.
+- Visual QA still needs a final full pass before merge; mobile product cards may need tighter image-height tuning.
 - The spike was built on `origin/main` at `eae948e`; later optimization commits must be reconciled before merge.
 - Production inquiry persistence still depends on configured database/mail handoff.
 - `NEXT_PUBLIC_SITE_URL` should be set in production for canonical and Open Graph URLs.
