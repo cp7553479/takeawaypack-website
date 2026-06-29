@@ -6,14 +6,16 @@ import ProductCard from "@/components/ProductCard";
 import StatsBar from "@/components/StatsBar";
 import TrustSection from "@/components/TrustSection";
 import { getFeaturedProducts, getSiteData } from "@/lib/dataAdapter";
+import { getMediaAssetUrl } from "@/lib/mediaAssets";
 
 export default async function HomePage() {
   const data = await getSiteData();
   const featured = await getFeaturedProducts(6);
+  const heroImage = await getMediaAssetUrl("/generated/hero-takeaway-packaging.png");
 
   return (
     <>
-      <HeroSection info={data.info} />
+      <HeroSection info={data.info} imageSrc={heroImage} />
       <StatsBar info={data.info} />
       <CategoryGrid categories={data.categories} />
 

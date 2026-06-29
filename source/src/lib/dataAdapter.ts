@@ -1,6 +1,7 @@
 import { sql } from "@vercel/postgres";
 
 import { getSampleSiteData, slugify } from "@/data/fallback";
+import { hasSupabaseCatalogEnv, querySupabaseSiteData } from "@/lib/supabaseCatalog";
 import type { Category, Product, ProductSpec, SiteData, SiteInfo } from "@/lib/types";
 
 let cache: SiteData | null = null;
@@ -247,6 +248,11 @@ function splitList(value?: string): string[] {
 }
 
 async function querySiteData(): Promise<SiteData | null> {
+  if (hasSupabaseCatalogEnv()) {
+    const supabaseData = await querySupabaseSiteData();
+    if (supabaseData) return supabaseData;
+  }
+
   if (!hasPostgresEnv()) return null;
 
   const sample = getSampleSiteData();
@@ -277,9 +283,9 @@ export async function getSiteData(): Promise<SiteData> {
   try {
     cache = (await querySiteData()) ?? getSampleSiteData();
   } catch (error) {
-    if (process.env.NODE_ENV !== "production") {
+    if (process.env.NODE_ENV !== "production" || process.env.DATA_ADAPTER_DEBUG === "1") {
       // eslint-disable-next-line no-console
-      console.warn("[dataAdapter] Vercel Postgres unavailable, using local sample data:", error);
+      console.warn("[dataAdapter] database unavailable, using local sample data:", error);
     }
     cache = getSampleSiteData();
   }
@@ -316,7 +322,8 @@ export async function getVariantsForProduct(product: Product): Promise<Product[]
 export async function getDataSourceDebug() {
   const data = await getSiteData();
   return {
-    databaseConfigured: hasPostgresEnv(),
+    databaseConfigured: hasSupabaseCatalogEnv() || hasPostgresEnv(),
+    databaseProvider: hasSupabaseCatalogEnv() ? "supabase" : hasPostgresEnv() ? "vercel-postgres" : "sample",
     infoSource: data.info.source,
     productSources: Array.from(new Set(data.products.map((p) => p.source))),
     productCount: data.products.length,

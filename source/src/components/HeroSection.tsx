@@ -3,7 +3,13 @@ import Image from "next/image";
 
 import type { SiteInfo } from "@/lib/types";
 
-export default function HeroSection({ info }: { info: SiteInfo }) {
+export default function HeroSection({
+  info,
+  imageSrc = "/generated/hero-takeaway-packaging.png",
+}: {
+  info: SiteInfo;
+  imageSrc?: string;
+}) {
   return (
     <section className="relative overflow-hidden border-b border-slate-200 bg-gradient-to-br from-brand-50 via-white to-kraft-50">
       <div className="container-page section grid items-center gap-10 lg:grid-cols-2">
@@ -42,7 +48,7 @@ export default function HeroSection({ info }: { info: SiteInfo }) {
         <div className="relative">
           <div className="relative aspect-[16/10] overflow-hidden rounded-md border border-slate-200 bg-white shadow-sm">
             <Image
-              src="/generated/hero-takeaway-packaging.png"
+              src={imageSrc}
               alt="Assorted takeaway food packaging samples prepared for export"
               fill
               priority

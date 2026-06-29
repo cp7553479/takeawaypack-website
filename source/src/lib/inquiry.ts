@@ -1,6 +1,7 @@
 import { sql } from "@vercel/postgres";
 import { z } from "zod";
 
+import { getSupabaseServer, isSupabaseConfigured } from "@/lib/supabase";
 import type { InquiryPayload, InquiryResult } from "@/lib/types";
 
 export const inquirySchema = z.object({
@@ -26,6 +27,12 @@ export function isVercelPostgresConfigured(): boolean {
   return Boolean(process.env.POSTGRES_URL || process.env.DATABASE_URL);
 }
 
+export function getInquiryMode(): InquiryResult["mode"] {
+  if (isSupabaseConfigured()) return "supabase";
+  if (isVercelPostgresConfigured()) return "vercel-postgres";
+  return "demo";
+}
+
 export async function submitInquiry(payload: InquiryPayload): Promise<InquiryResult> {
   const parsed = inquirySchema.safeParse(payload);
   if (!parsed.success) {
@@ -36,13 +43,60 @@ export async function submitInquiry(payload: InquiryPayload): Promise<InquiryRes
     }
     return {
       ok: false,
-      mode: isVercelPostgresConfigured() ? "vercel-postgres" : "demo",
+      mode: getInquiryMode(),
       message: "Please correct the highlighted fields.",
       errors,
     };
   }
 
   const data = parsed.data;
+  if (isSupabaseConfigured()) {
+    const supabase = getSupabaseServer();
+    if (!supabase) {
+      return {
+        ok: false,
+        mode: "supabase",
+        message: "The inquiry database is not available right now. Please try again or email us directly.",
+      };
+    }
+
+    const { data: inserted, error } = await supabase
+      .from("takeawaypack_inquiries")
+      .insert({
+        name: data.name,
+        company: normalize(data.company),
+        email: data.email,
+        phone: normalize(data.phone),
+        country: normalize(data.country),
+        product: normalize(data.product),
+        quantity: normalize(data.quantity),
+        message: data.message,
+        source_page: normalize(data.source),
+        status: "new",
+      })
+      .select("id")
+      .single();
+
+    if (error) {
+      if (typeof console !== "undefined") {
+        // eslint-disable-next-line no-console
+        console.error("[inquiry:supabase] insert failed:", error);
+      }
+      return {
+        ok: false,
+        mode: "supabase",
+        message: "We could not save your inquiry right now. Please try again or email us directly.",
+      };
+    }
+
+    return {
+      ok: true,
+      mode: "supabase",
+      message: "Thank you — your inquiry has been received. Our team will reply shortly.",
+      id: inserted?.id ? String(inserted.id) : undefined,
+    };
+  }
+
   if (!isVercelPostgresConfigured()) {
     if (typeof console !== "undefined") {
       // eslint-disable-next-line no-console

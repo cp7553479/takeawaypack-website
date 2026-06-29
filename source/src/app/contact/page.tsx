@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 import InquiryForm from "@/components/InquiryForm";
 import { getSiteData } from "@/lib/dataAdapter";
-import { isVercelPostgresConfigured } from "@/lib/inquiry";
+import { getInquiryMode } from "@/lib/inquiry";
 
 export const metadata: Metadata = {
   title: "Contact & Request Inquiry (RFQ)",
@@ -17,7 +17,7 @@ interface PageProps {
 export default async function ContactPage({ searchParams }: PageProps) {
   const { info } = await getSiteData();
   const product = searchParams.product?.trim() ? searchParams.product.trim() : undefined;
-  const mode = isVercelPostgresConfigured() ? "vercel-postgres" : "demo";
+  const mode = getInquiryMode();
 
   return (
     <>

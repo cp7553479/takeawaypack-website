@@ -4,6 +4,7 @@ import Image from "next/image";
 import InquiryCTA from "@/components/InquiryCTA";
 import ProcessSteps from "@/components/ProcessSteps";
 import { getSiteData } from "@/lib/dataAdapter";
+import { getMediaAssetUrl } from "@/lib/mediaAssets";
 
 export const metadata: Metadata = {
   title: "About & Capabilities",
@@ -13,6 +14,7 @@ export const metadata: Metadata = {
 
 export default async function AboutPage() {
   const { info } = await getSiteData();
+  const capabilityImage = await getMediaAssetUrl("/generated/capabilities-quality-control.png");
 
   return (
     <>
@@ -31,7 +33,7 @@ export default async function AboutPage() {
           <div className="lg:col-span-2">
             <div className="relative mb-8 aspect-[16/9] overflow-hidden rounded-md border border-slate-200 bg-slate-100 shadow-sm">
               <Image
-                src="/generated/capabilities-quality-control.png"
+                src={capabilityImage}
                 alt="Packaging samples, measuring tools, and export cartons prepared for quality control"
                 fill
                 sizes="(min-width: 1024px) 60vw, 100vw"

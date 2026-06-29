@@ -36,6 +36,11 @@ export async function POST(request: Request) {
 
 // Lightweight capability probe for the form to show the right UX.
 export async function GET() {
-  const configured = Boolean(process.env.POSTGRES_URL || process.env.DATABASE_URL);
-  return NextResponse.json({ ok: true, mode: configured ? "vercel-postgres" : "demo" });
+  const hasSupabase = Boolean(
+    process.env.NEXT_PUBLIC_SUPABASE_URL &&
+      (process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY)
+  );
+  const hasPostgres = Boolean(process.env.POSTGRES_URL || process.env.DATABASE_URL);
+  const mode = hasSupabase ? "supabase" : hasPostgres ? "vercel-postgres" : "demo";
+  return NextResponse.json({ ok: true, mode });
 }
