@@ -103,7 +103,7 @@ else
 fi
 
 # --- 4. Push ----------------------------------------------------------------
-echo "→ Pushing to origin/$BRANCH…"
+echo "→ Pushing to origin/${BRANCH}..."
 git push -u origin "$BRANCH"
 
 echo ""
