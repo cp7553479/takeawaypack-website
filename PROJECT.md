@@ -29,19 +29,26 @@ database, and deploy to Vercel when credentials are available.
    - Owner: data import subagent
    - Write scope: `content/imports/`, `content/data-contract.md`,
      `IMPORT_REPORT.md`
-   - Status: running
+   - Status: blocked
+   - Blocker: `lark-cli --profile wali-ge` is not configured. No Base data was
+     imported or modified.
 
 2. Project Build
    - Owner: build subagent
    - Write scope: `source/`, `assets/`, `deploy/`, `handoff/BUILD_REPORT.md`
    - Depends on: completed data import
-   - Status: pending
+   - Status: complete
+   - Verification: `npm install`, `npm run lint`, `npm run typecheck`, and
+     `npm run build` passed after local verification.
 
 3. Launch QA And Deploy
    - Owner: QA/deploy subagent
    - Write scope: `QA_REPORT.md`, `handoff/README.md`, deploy metadata
    - Depends on: successful local build
-   - Status: pending
+   - Status: partially complete
+   - GitHub: pushed to `https://github.com/cp7553479/takeawaypack-website`.
+   - Vercel: blocked on user login; the first device code expired.
+   - Supabase: blocked on `SUPABASE_ACCESS_TOKEN` or `supabase login --token`.
 
 ## External Effects
 
