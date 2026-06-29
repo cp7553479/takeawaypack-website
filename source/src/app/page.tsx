@@ -20,6 +20,7 @@ import { Card } from "@/components/ui/card";
 import { BLOG_POSTS } from "@/lib/blogPosts";
 import { getFeaturedProducts, getSiteData } from "@/lib/dataAdapter";
 import { getMediaAssetUrl } from "@/lib/mediaAssets";
+import type { Stat } from "@/lib/types";
 
 const HOW_IT_WORKS = [
   {
@@ -51,12 +52,28 @@ export default async function HomePage() {
     getMediaAssetUrl("/generated/marketing/hero-global-foodservice-packaging.png"),
   ]);
 
-  const stats = data.info.stats ?? [
-    { label: "Product range", value: "Broad" },
-    { label: "Export support", value: "Ready" },
-    { label: "RFQ model", value: "First" },
-    { label: "MOQ", value: "Flexible" },
-  ];
+  // Prefer hand-curated stats from the site source; otherwise derive credible
+  // counts from the loaded catalog so the strip never shows empty cells or
+  // generic placeholders for imported data. Mirrors StatsBar on main (bccfad0).
+  const stats: Stat[] =
+    data.info.stats && data.info.stats.length > 0
+      ? data.info.stats
+      : [
+          { label: "Catalog products", value: data.products.length.toLocaleString() },
+          { label: "Categories", value: data.categories.length.toLocaleString() },
+          {
+            label: "With images",
+            value: data.products
+              .filter((product) => product.hasImage !== false && product.image)
+              .length.toLocaleString(),
+          },
+          {
+            label: "Multi-image items",
+            value: data.products
+              .filter((product) => (product.gallery?.length ?? 0) > 1)
+              .length.toLocaleString(),
+          },
+        ];
 
   return (
     <>
