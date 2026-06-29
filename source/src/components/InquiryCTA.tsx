@@ -11,8 +11,8 @@ export default function InquiryCTA() {
                 Ready to get a quotation?
               </h2>
               <p className="mt-2 text-brand-50">
-                Send your specifications, target quantity, and destination. We&apos;ll reply with
-                pricing, MOQ, and lead time.
+                Send your specifications, target quantity, and destination so pricing, MOQ, and
+                timing can be confirmed against the exact request.
               </p>
             </div>
             <div className="flex flex-wrap gap-3">

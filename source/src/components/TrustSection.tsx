@@ -13,15 +13,15 @@ export default function TrustSection({ info }: { info: SiteInfo }) {
           <h2 className="h-section mt-2">Built for reliable export supply</h2>
           <p className="lead mt-3">
             Communication, customization, and consistency matter when sourcing packaging overseas.
-            The site is structured to make specifications, MOQ, and lead times clear up front so you
-            can decide quickly.
+            The site is structured to surface available specifications and guide buyers toward
+            quote-ready questions before committing to an order.
           </p>
           <ul className="mt-6 space-y-3">
             {[
-              "Clear specs and MOQ on every product",
-              "Custom sizes, materials, and printed branding",
-              "Export packing and consolidated shipping",
-              "Direct communication for fast quotations",
+              "Available specs shown where sourced",
+              "Material, size, and print questions prepared for RFQ",
+              "Packing and shipping details captured before order",
+              "Direct inquiry path for quotation follow-up",
             ].map((point) => (
               <li key={point} className="flex items-start gap-3 text-sm text-slate-700">
                 <span className="mt-0.5 flex h-5 w-5 flex-none items-center justify-center rounded-full bg-brand-100 text-brand-700">

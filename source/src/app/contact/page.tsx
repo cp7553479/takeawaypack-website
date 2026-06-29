@@ -28,8 +28,8 @@ export default async function ContactPage({ searchParams }: PageProps) {
             Request a quotation
           </h1>
           <p className="lead mt-3 max-w-2xl">
-            Tell us what you need — product, material, size, quantity, and destination — and we&apos;ll
-            reply with pricing, MOQ, and lead time.
+            Tell us what you need: product, material, size, quantity, customization, and destination.
+            Pricing, MOQ, and timing should be confirmed against the exact request.
           </p>
         </div>
       </section>
@@ -79,12 +79,12 @@ export default async function ContactPage({ searchParams }: PageProps) {
 
             <div className="card p-6">
               <h2 className="text-base font-semibold text-slate-900">What to include</h2>
-              <ul className="mt-3 space-y-2 text-sm text-slate-600">
-                <li>• Product name or category</li>
-                <li>• Material and size / capacity</li>
-                <li>• Estimated order quantity</li>
-                <li>• Customization (print, color, logo)</li>
-                <li>• Destination port / country</li>
+              <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-slate-600">
+                <li>Product name or category</li>
+                <li>Material and size / capacity</li>
+                <li>Estimated order quantity</li>
+                <li>Customization (print, color, logo)</li>
+                <li>Destination port / country</li>
               </ul>
             </div>
 
@@ -92,7 +92,7 @@ export default async function ContactPage({ searchParams }: PageProps) {
               <h2 className="text-sm font-semibold text-kraft-900">Inquiry storage</h2>
               <p className="mt-2 text-sm text-kraft-800">
                 {mode === "vercel-postgres"
-                  ? "Submissions are saved to the website database and our team will follow up by email."
+                  ? "Submissions are saved to the website database for quotation follow-up."
                   : "Demo mode: inquiries validate here but are not saved until the website database is configured."}
               </p>
             </div>

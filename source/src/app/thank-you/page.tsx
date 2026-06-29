@@ -17,8 +17,8 @@ export default function ThankYouPage() {
         </div>
         <h1 className="mt-5 text-3xl font-extrabold tracking-tight text-slate-900">Thank you</h1>
         <p className="lead mt-3">
-          Your inquiry has been received. Our team will review it and reply by email, typically
-          within one business day.
+          Your inquiry has been received. The quotation team will review the details and follow up
+          through the contact information you provided.
         </p>
         <div className="mt-6 flex flex-wrap justify-center gap-3">
           <Link href="/products" className="btn-outline">Continue browsing</Link>

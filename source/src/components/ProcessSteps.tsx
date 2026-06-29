@@ -8,18 +8,18 @@ const STEPS = [
   },
   {
     n: "2",
-    title: "Receive a quotation",
-    body: "We confirm materials, sizes, MOQ, and pricing, and send samples where applicable.",
+    title: "Confirm quote basis",
+    body: "Align material, size, MOQ, pricing basis, sample needs, and any open questions before comparing offers.",
   },
   {
     n: "3",
-    title: "Confirm & produce",
-    body: "Approve artwork and details, then production runs to the agreed lead time.",
+    title: "Approve details",
+    body: "Review artwork, sample references, packing notes, and the agreed timeline before moving ahead.",
   },
   {
     n: "4",
-    title: "Quality check & ship",
-    body: "Goods are inspected, export-packed, and consolidated for shipping to your market.",
+    title: "Prepare handoff",
+    body: "Confirm inspection reference points, carton marks, packing method, and shipping handoff details.",
   },
 ];
 
@@ -31,8 +31,8 @@ export default function ProcessSteps({ info }: { info?: SiteInfo }) {
           <span className="eyebrow">How to order</span>
           <h2 className="h-section mt-2">A simple inquiry-to-shipment process</h2>
           <p className="lead mt-3">
-            We focus on trade buyers. From first inquiry to consolidated export shipping, the
-            workflow is built for clarity and speed.
+            The workflow helps trade buyers turn a broad sourcing request into a quote-ready
+            specification with fewer clarification loops.
           </p>
         </div>
 

@@ -32,7 +32,7 @@ export default function InquiryForm({ defaultProduct, sourcePage, mode }: Inquir
     country: "",
     product: defaultProduct ?? "",
     quantity: "",
-    message: defaultProduct ? `I'm interested in ${defaultProduct}. Please send pricing, MOQ, and lead time.` : "",
+    message: defaultProduct ? `I'm interested in ${defaultProduct}. Please confirm pricing, MOQ, and lead time for my required specification.` : "",
   });
   const [errors, setErrors] = useState<FieldErrors>({});
   const [status, setStatus] = useState<SubmitResult | null>(null);
@@ -229,10 +229,10 @@ export default function InquiryForm({ defaultProduct, sourcePage, mode }: Inquir
 
       <div className="flex flex-wrap items-center gap-3">
         <button type="submit" className="btn-primary" disabled={submitting}>
-          {submitting ? "Sending…" : "Send Inquiry"}
+          {submitting ? "Sending..." : "Send Inquiry"}
         </button>
         <span className="text-xs text-slate-500">
-          We typically reply within one business day.
+          Include enough detail for the quotation team to confirm the exact specification.
         </span>
       </div>
     </form>
