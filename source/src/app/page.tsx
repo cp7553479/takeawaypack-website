@@ -44,7 +44,7 @@ export default async function HomePage() {
   return (
     <>
       <HeroSection info={data.info} imageSrc={heroImage} />
-      <StatsBar info={data.info} />
+      <StatsBar info={data.info} products={data.products} categories={data.categories} />
       <CategoryGrid categories={data.categories} />
 
       <section className="section">
