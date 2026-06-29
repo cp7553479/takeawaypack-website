@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import InquiryCTA from "@/components/InquiryCTA";
 import ProductCard from "@/components/ProductCard";
 import ProductGallery from "@/components/ProductGallery";
+import RfqChecklist from "@/components/RfqChecklist";
 import {
   getProductBySlug,
   getProductsByCategory,
@@ -168,6 +169,11 @@ export default async function ProductDetailPage({ params }: PageProps) {
           </div>
         </section>
       ) : null}
+
+      <RfqChecklist
+        title="Prepare the product quotation request"
+        intro="Use the checklist below to send the context needed for a practical product quotation and sample discussion."
+      />
 
       {variants.length > 0 ? (
         <section className="section">

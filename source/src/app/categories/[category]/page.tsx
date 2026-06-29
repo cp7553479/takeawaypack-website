@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 
 import InquiryCTA from "@/components/InquiryCTA";
 import ProductCard from "@/components/ProductCard";
+import RfqChecklist from "@/components/RfqChecklist";
 import { getCategories, getProductsByCategory } from "@/lib/dataAdapter";
 
 interface PageProps {
@@ -48,6 +49,11 @@ export default async function CategoryPage({ params }: PageProps) {
           </div>
         </div>
       </section>
+
+      <RfqChecklist
+        title={`Quoting ${cat!.name} products`}
+        intro="Before selecting a final item, compare product size, material, quantity, packaging, destination, and documentation needs."
+      />
 
       <section className="section">
         <div className="container-page">
