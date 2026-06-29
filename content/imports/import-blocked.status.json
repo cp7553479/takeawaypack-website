@@ -1,0 +1,27 @@
+{
+  "status": "blocked",
+  "blocked_at": "2026-06-29",
+  "reason": "lark-cli profile \"wali-ge\" is not configured in this environment",
+  "available_profiles": [
+    "logopress"
+  ],
+  "source_urls": {
+    "site_info": "https://hcnoqwd8zi2e.feishu.cn/base/DE3Yb7ylGakxnjsP7GPcn7EOnku?table=tblQOkbNO1iC48fZ&view=vew6VXXi4C",
+    "products": "https://hcnoqwd8zi2e.feishu.cn/base/EmcCbKUfaaVVx7svWDQcrWMrnLh?table=tbl8CcWEyrGvasHq&view=vewFvOHsQS"
+  },
+  "commands_attempted": [
+    "lark-cli --profile wali-ge base +url-resolve --url <site-info-url> --as user",
+    "lark-cli --profile wali-ge base +url-resolve --url <products-url> --as user"
+  ],
+  "record_counts": {
+    "site_info": 0,
+    "products": 0
+  },
+  "field_counts": {
+    "site_info": 0,
+    "products": 0
+  },
+  "pagination_complete": false,
+  "raw_data_exported": false,
+  "next_action": "Configure or login lark-cli profile \"wali-ge\", then rerun the Base import task. Do not use another profile because the task explicitly requires --profile wali-ge."
+}

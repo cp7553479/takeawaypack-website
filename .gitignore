@@ -1,0 +1,35 @@
+# Git ignore for the standalone takeawaypack-website repository (repo root).
+# (This file only affects a git repo initialized in this project folder; it does
+#  not change the parent workspace repository.)
+
+# Next.js / Node
+source/node_modules/
+source/.next/
+source/out/
+source/build/
+source/.vercel/
+source/next-env.d.ts
+
+# Env / secrets
+.env
+.env*.local
+source/.env
+source/.env*.local
+
+# Logs
+*.log
+npm-debug.log*
+logs/
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
+
+# Local-only scratch
+.temp/
+source/.data/
+
+# Keep imported source data OUT of the public repo if it is sensitive.
+# Uncomment the next line if the Feishu Base export should not be public:
+# content/imports/*.raw.json
