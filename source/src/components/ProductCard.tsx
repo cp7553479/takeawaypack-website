@@ -5,9 +5,10 @@ import type { Product } from "@/lib/types";
 
 interface ProductCardProps {
   product: Product;
+  showMoq?: boolean;
 }
 
-export default function ProductCard({ product }: ProductCardProps) {
+export default function ProductCard({ product, showMoq = true }: ProductCardProps) {
   const inquiryHref = `/contact?product=${encodeURIComponent(product.name)}`;
   return (
     <article className="card card-hover flex min-w-0 flex-col overflow-hidden">
@@ -49,7 +50,7 @@ export default function ProductCard({ product }: ProductCardProps) {
               <dd className="inline">{product.material}</dd>
             </div>
           ) : null}
-          {product.moq ? (
+          {showMoq && product.moq ? (
             <div className="min-w-0 break-words">
               <dt className="inline font-medium text-slate-600">MOQ:</dt>{" "}
               <dd className="inline">{product.moq}</dd>

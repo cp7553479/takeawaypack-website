@@ -4,7 +4,7 @@ import path from "node:path";
 
 import { getSampleSiteData, slugify } from "@/data/fallback";
 import { hasSupabaseCatalogEnv, querySupabaseSiteData } from "@/lib/supabaseCatalog";
-import type { Category, Product, ProductSpec, SiteData, SiteInfo } from "@/lib/types";
+import type { Category, Product, ProductPriceTier, ProductSpec, SiteData, SiteInfo } from "@/lib/types";
 
 let cache: SiteData | null = null;
 
@@ -81,6 +81,13 @@ function intOrNull(value: unknown): number | null {
   return Number.isFinite(n) ? Math.trunc(n) : null;
 }
 
+function numberTextOrNull(value: unknown): string | null {
+  const rendered = text(value);
+  if (!rendered) return null;
+  const n = Number(rendered);
+  return Number.isFinite(n) ? rendered : null;
+}
+
 function normalizeCurrency(value: unknown) {
   const original = text(value);
   return original === "US dolar" ? "US dollar" : original || undefined;
@@ -124,7 +131,6 @@ function buildImportedSpecs(fields: Record<string, unknown>): ProductSpec[] {
   add("Specification", fields["产品规格"]);
   add("Printing", normalizeListText(fields["印刷方式"]));
   add("Pieces/ctn", fields["件数/箱"]);
-  add("MOQ", formatQuantity(fields["大货起订量"] || fields["Q1"]));
   add("Carton L(cm)", fields["箱子尺寸 长(cm)"]);
   add("Carton W(cm)", fields["箱子尺寸 宽(cm)"]);
   add("Carton H(cm)", fields["箱子尺寸 高(cm)"]);
@@ -132,16 +138,40 @@ function buildImportedSpecs(fields: Record<string, unknown>): ProductSpec[] {
   return specs;
 }
 
-function formatImportedPriceNote(fields: Record<string, unknown>): string {
+function buildImportedPriceTiers(fields: Record<string, unknown>): ProductPriceTier[] {
   const currency = normalizeCurrency(fields["Currency"]) || "US dollar";
-  for (let tier = 1; tier <= 10; tier += 1) {
-    const price = text(fields[`P${tier}`]);
-    if (!price) continue;
+  return Array.from({ length: 10 }, (_, index) => {
+    const tier = index + 1;
     const quantity = intOrNull(fields[`Q${tier}`]);
-    const quantityLabel = quantity ? `${quantity.toLocaleString()} pcs` : "quoted quantity";
-    return `From ${currency} ${price} at ${quantityLabel}`;
-  }
-  return "Contact for quote";
+    const price = numberTextOrNull(fields[`P${tier}`]);
+    if (quantity == null || !price) return null;
+    return { tier, quantity, price, currency };
+  }).filter((tier): tier is ProductPriceTier => Boolean(tier));
+}
+
+function normalizePriceTiers(
+  tiers: Array<{ tier: number; quantity: number | null; price: string | null; currency: string | null }> | null | undefined,
+  fallbackCurrency?: string | null
+): ProductPriceTier[] {
+  return (Array.isArray(tiers) ? tiers : [])
+    .map((tier) => {
+      const quantity = intOrNull(tier.quantity);
+      const price = numberTextOrNull(tier.price);
+      if (quantity == null || !price) return null;
+      return {
+        tier: tier.tier,
+        quantity,
+        price,
+        currency: tier.currency || fallbackCurrency || "US dollar",
+      };
+    })
+    .filter((tier): tier is ProductPriceTier => Boolean(tier));
+}
+
+function formatImportedPriceNote(fields: Record<string, unknown>): string {
+  const first = buildImportedPriceTiers(fields)[0];
+  if (!first) return "Contact for quote";
+  return `From ${first.currency} ${first.price} at ${first.quantity.toLocaleString()} pcs`;
 }
 
 function readLocalSiteInfo(): SiteInfo | null {
@@ -235,6 +265,7 @@ function queryLocalImportSiteData(): SiteData | null {
       material: normalizeListText(fields["产品材质"]) || undefined,
       customization: normalizeListText(fields["印刷方式"]) || undefined,
       priceNote: formatImportedPriceNote(fields),
+      priceTiers: buildImportedPriceTiers(fields),
       hasQuote,
       hasImage: gallery.length > 0,
       noImageReason: gallery.length > 0 ? undefined : "No product image in the source Base export.",
@@ -347,9 +378,10 @@ async function queryProducts(): Promise<Product[]> {
 
   const products = rows.map((row) => {
     const gallery = Array.isArray(row.gallery) ? row.gallery.filter(Boolean) : [];
-    const priceNote = formatPriceNote(row);
+    const priceTiers = normalizePriceTiers(row.price_tiers, row.currency_normalized);
+    const priceNote = formatPriceNote(row, priceTiers);
     const variantCount = rows.filter((candidate) => candidate.parent_base_record_id === row.base_record_id).length;
-    const specs = Array.isArray(row.specs) ? [...row.specs] : [];
+    const specs = Array.isArray(row.specs) ? row.specs.filter((spec) => spec.label !== "MOQ") : [];
     if (variantCount > 0) {
       specs.push({ label: "Available variants", value: String(variantCount) });
     }
@@ -375,6 +407,7 @@ async function queryProducts(): Promise<Product[]> {
       material: row.material ?? undefined,
       customization: row.customization ?? undefined,
       priceNote,
+      priceTiers,
       hasQuote: row.has_quote,
       hasImage: row.has_image,
       noImageReason: row.no_image_reason ?? undefined,
@@ -387,13 +420,10 @@ async function queryProducts(): Promise<Product[]> {
   return products;
 }
 
-function formatPriceNote(row: ProductRow): string {
-  const tiers = Array.isArray(row.price_tiers) ? row.price_tiers : [];
-  const first = tiers.find((tier) => tier.price);
-  if (!row.has_quote || !first?.price) return "Contact for quote";
-  const quantity = first.quantity ? `${first.quantity.toLocaleString()} pcs` : "quoted quantity";
-  const currency = row.currency_normalized || "US dollar";
-  return `From ${currency} ${first.price} at ${quantity}`;
+function formatPriceNote(row: ProductRow, tiers = normalizePriceTiers(row.price_tiers, row.currency_normalized)): string {
+  const first = tiers[0];
+  if (!row.has_quote || !first) return "Contact for quote";
+  return `From ${first.currency} ${first.price} at ${first.quantity.toLocaleString()} pcs`;
 }
 
 async function queryCategories(): Promise<Category[]> {

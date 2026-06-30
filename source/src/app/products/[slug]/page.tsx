@@ -12,6 +12,7 @@ import {
   getProducts,
   getVariantsForProduct,
 } from "@/lib/dataAdapter";
+import type { ProductPriceTier } from "@/lib/types";
 
 interface PageProps {
   params: { slug: string };
@@ -41,6 +42,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
 
   const inquiryHref = `/contact?product=${encodeURIComponent(product.name)}`;
   const galleryImages = Array.from(new Set([product.image, ...(product.gallery ?? [])].filter(Boolean))) as string[];
+  const detailSpecs = product.specs.filter((spec) => spec.label !== "MOQ");
 
   return (
     <>
@@ -79,14 +81,11 @@ export default async function ProductDetailPage({ params }: PageProps) {
 
             <dl className="mt-6 grid grid-cols-2 gap-x-4 gap-y-3 rounded-xl border border-slate-200 bg-white p-5 text-sm">
               {product.material ? <SpecItem label="Material" value={product.material} /> : null}
-              {product.moq ? <SpecItem label="MOQ" value={product.moq} /> : null}
               {product.leadTime ? <SpecItem label="Lead time" value={product.leadTime} /> : null}
               {product.customization ? <SpecItem label="Customization" value={product.customization} /> : null}
             </dl>
 
-            <p className="mt-3 text-sm text-slate-500">
-              {product.hasQuote === false ? "Contact for quote" : product.priceNote ?? "Contact for quote"}
-            </p>
+            <PriceTierTable tiers={product.priceTiers ?? []} hasQuote={product.hasQuote} />
 
             <div className="mt-6 flex flex-wrap gap-3">
               <Link href={inquiryHref} className="btn-accent">
@@ -110,7 +109,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
         </div>
       </section>
 
-      {(product.description || (product.features && product.features.length) || product.specs.length > 0) ? (
+      {(product.description || (product.features && product.features.length) || detailSpecs.length > 0) ? (
         <section className="section bg-slate-50">
           <div className="container-page grid gap-10 lg:grid-cols-2">
             <div>
@@ -146,12 +145,12 @@ export default async function ProductDetailPage({ params }: PageProps) {
               ) : null}
             </div>
 
-            {product.specs.length > 0 ? (
+            {detailSpecs.length > 0 ? (
               <div>
                 <h2 className="text-xl font-bold text-slate-900">Specifications</h2>
                 <table className="mt-3 w-full overflow-hidden rounded-xl border border-slate-200 text-sm">
                   <tbody>
-                    {product.specs.map((s, i) => (
+                    {detailSpecs.map((s, i) => (
                       <tr key={s.label} className={i % 2 === 0 ? "bg-white" : "bg-slate-50"}>
                         <th scope="row" className="w-2/5 border-b border-slate-100 px-4 py-3 text-left font-medium text-slate-600">
                           {s.label}
@@ -178,7 +177,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
             <h2 className="text-xl font-bold text-slate-900">Available specifications</h2>
             <div className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
               {variants.map((variant) => (
-                <ProductCard key={variant.id} product={variant} />
+                <ProductCard key={variant.id} product={variant} showMoq={false} />
               ))}
             </div>
           </div>
@@ -191,7 +190,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
             <h2 className="text-xl font-bold text-slate-900">Related products</h2>
             <div className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
               {related.map((p) => (
-                <ProductCard key={p.id} product={p} />
+                <ProductCard key={p.id} product={p} showMoq={false} />
               ))}
             </div>
           </div>
@@ -208,6 +207,50 @@ function SpecItem({ label, value }: { label: string; value: string }) {
     <div>
       <dt className="text-xs font-semibold uppercase tracking-wide text-slate-500">{label}</dt>
       <dd className="mt-0.5 text-slate-800">{value}</dd>
+    </div>
+  );
+}
+
+function PriceTierTable({
+  tiers,
+  hasQuote,
+}: {
+  tiers: ProductPriceTier[];
+  hasQuote?: boolean;
+}) {
+  if (hasQuote === false || tiers.length === 0) {
+    return <p className="mt-3 text-sm text-slate-500">Contact for quote</p>;
+  }
+
+  return (
+    <div className="mt-5 overflow-hidden rounded-xl border border-slate-200 bg-white">
+      <div className="border-b border-slate-100 px-4 py-3">
+        <h2 className="text-sm font-semibold text-slate-900">Price tiers</h2>
+      </div>
+      <table className="w-full text-sm">
+        <thead className="bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
+          <tr>
+            <th scope="col" className="px-4 py-3 text-left font-semibold">
+              Quantity
+            </th>
+            <th scope="col" className="px-4 py-3 text-right font-semibold">
+              Unit price
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {tiers.map((tier, index) => (
+            <tr key={tier.tier} className={index % 2 === 0 ? "bg-white" : "bg-slate-50/60"}>
+              <td className="border-t border-slate-100 px-4 py-3 text-slate-700">
+                {tier.quantity.toLocaleString()} pcs
+              </td>
+              <td className="border-t border-slate-100 px-4 py-3 text-right font-semibold text-slate-900">
+                {tier.currency} {tier.price}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }

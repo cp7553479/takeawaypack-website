@@ -61,6 +61,13 @@ export interface ProductSpec {
   value: string;
 }
 
+export interface ProductPriceTier {
+  tier: number;
+  quantity: number;
+  price: string;
+  currency: string;
+}
+
 export interface Product {
   source: DataSource;
   /** Stable internal id (derived from record id or slug). */
@@ -85,6 +92,7 @@ export interface Product {
   certifications?: string[];
   useCases?: string[];
   priceNote?: string;
+  priceTiers?: ProductPriceTier[];
   hasQuote?: boolean;
   hasImage?: boolean;
   noImageReason?: string;

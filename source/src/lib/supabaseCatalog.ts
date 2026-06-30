@@ -1,6 +1,6 @@
 import { getSampleSiteData, slugify } from "@/data/fallback";
 import { getSupabaseServer, isSupabaseConfigured } from "@/lib/supabase";
-import type { Category, Product, ProductSpec, SiteData, SiteInfo } from "@/lib/types";
+import type { Category, Product, ProductPriceTier, ProductSpec, SiteData, SiteInfo } from "@/lib/types";
 
 type SupabaseProductRow = {
   id: number;
@@ -61,6 +61,28 @@ type SupabasePriceRow = {
   has_price: boolean;
 };
 
+function numberTextOrNull(value: unknown): string | null {
+  if (value == null) return null;
+  const rendered = String(value).trim();
+  if (!rendered) return null;
+  return Number.isFinite(Number(rendered)) ? rendered : null;
+}
+
+function buildPriceTiers(rows: SupabasePriceRow[], fallbackCurrency?: string | null): ProductPriceTier[] {
+  return rows
+    .map((row) => {
+      const price = numberTextOrNull(row.price);
+      if (row.quantity == null || !price) return null;
+      return {
+        tier: row.tier,
+        quantity: row.quantity,
+        price,
+        currency: row.currency || fallbackCurrency || "US dollar",
+      };
+    })
+    .filter((tier): tier is ProductPriceTier => Boolean(tier));
+}
+
 export function hasSupabaseCatalogEnv() {
   return isSupabaseConfigured();
 }
@@ -102,10 +124,13 @@ export async function querySupabaseSiteData(): Promise<SiteData | null> {
     const gallery = (mediaByProduct.get(row.id) ?? [])
       .map((media) => media.public_path)
       .filter((value): value is string => Boolean(value));
-    const specs: ProductSpec[] = (specsByProduct.get(row.id) ?? []).map((spec) => ({
-      label: spec.label,
-      value: spec.value,
-    }));
+    const specs: ProductSpec[] = (specsByProduct.get(row.id) ?? [])
+      .filter((spec) => spec.label !== "MOQ")
+      .map((spec) => ({
+        label: spec.label,
+        value: spec.value,
+      }));
+    const priceTiers = buildPriceTiers(pricesByProduct.get(row.id) ?? [], row.currency_normalized);
     const variantCount = productRows.filter((candidate) => candidate.parent_base_record_id === row.base_record_id).length;
     if (variantCount > 0) {
       specs.push({ label: "Available variants", value: String(variantCount) });
@@ -131,7 +156,8 @@ export async function querySupabaseSiteData(): Promise<SiteData | null> {
       moq: row.moq ?? undefined,
       material: row.material ?? undefined,
       customization: row.customization ?? undefined,
-      priceNote: formatPriceNote(row, pricesByProduct.get(row.id) ?? []),
+      priceNote: formatPriceNote(row, priceTiers),
+      priceTiers,
       hasQuote: row.has_quote,
       hasImage: row.has_image,
       noImageReason: row.no_image_reason ?? undefined,
@@ -185,12 +211,10 @@ async function fetchAll<T>(
   return rows;
 }
 
-function formatPriceNote(row: SupabaseProductRow, tiers: SupabasePriceRow[]): string {
-  const first = tiers.find((tier) => tier.price);
-  if (!row.has_quote || !first?.price) return "Contact for quote";
-  const quantity = first.quantity ? `${first.quantity.toLocaleString()} pcs` : "quoted quantity";
-  const currency = row.currency_normalized || "US dollar";
-  return `From ${currency} ${first.price} at ${quantity}`;
+function formatPriceNote(row: SupabaseProductRow, tiers: ProductPriceTier[]): string {
+  const first = tiers[0];
+  if (!row.has_quote || !first) return "Contact for quote";
+  return `From ${first.currency} ${first.price} at ${first.quantity.toLocaleString()} pcs`;
 }
 
 function buildSiteInfo(rows: SupabaseSettingRow[]): SiteInfo {

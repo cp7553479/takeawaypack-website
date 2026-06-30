@@ -189,7 +189,6 @@ function buildSpecs(fields) {
   add("Specification", fields["产品规格"]);
   add("Printing", fields["印刷方式"]);
   add("Pieces/ctn", fields["件数/箱"]);
-  add("MOQ", fields["大货起订量"] || fields["Q1"]);
   add("Carton L(cm)", fields["箱子尺寸 长(cm)"]);
   add("Carton W(cm)", fields["箱子尺寸 宽(cm)"]);
   add("Carton H(cm)", fields["箱子尺寸 高(cm)"]);
