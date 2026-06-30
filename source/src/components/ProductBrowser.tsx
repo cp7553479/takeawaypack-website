@@ -187,9 +187,14 @@ export default function ProductBrowser({ products, categories }: ProductBrowserP
           </button>
         </div>
       ) : (
-        <div className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-6 grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4">
           {filtered.map((p) => (
-            <ProductCard key={p.id} product={p} />
+            <div
+              key={p.id}
+              className="min-w-0 [&_.btn-outline]:px-3 [&_.btn-primary]:px-3 [&_.chip]:min-w-0 [&_.chip]:break-words"
+            >
+              <ProductCard product={p} />
+            </div>
           ))}
         </div>
       )}

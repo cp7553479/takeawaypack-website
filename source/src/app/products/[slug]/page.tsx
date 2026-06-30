@@ -92,9 +92,6 @@ export default async function ProductDetailPage({ params }: PageProps) {
               <Link href={inquiryHref} className="btn-accent">
                 Request a quotation
               </Link>
-              <Link href="/products" className="btn-outline">
-                Back to catalog
-              </Link>
             </div>
 
             {product.useCases && product.useCases.length > 0 ? (
