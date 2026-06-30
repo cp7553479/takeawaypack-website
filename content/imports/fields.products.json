@@ -1,0 +1,669 @@
+{
+  "ok": true,
+  "identity": "user",
+  "data": {
+    "fields": [
+      {
+        "id": "fld9RB8ycs",
+        "name": "箱子尺寸 长(cm)",
+        "style": {
+          "percentage": false,
+          "precision": 1,
+          "thousands_separator": false,
+          "type": "plain"
+        },
+        "type": "number"
+      },
+      {
+        "description": "第9档数量",
+        "id": "fldSz0ZRkf",
+        "name": "Q9",
+        "style": {
+          "percentage": false,
+          "precision": 0,
+          "thousands_separator": false,
+          "type": "plain"
+        },
+        "type": "number"
+      },
+      {
+        "expression": "\"US dolar\"",
+        "id": "fldXAeAO3v",
+        "name": "Currency",
+        "type": "formula"
+      },
+      {
+        "id": "fldh6nJpXN",
+        "name": "箱子尺寸 宽(cm)",
+        "style": {
+          "percentage": false,
+          "precision": 1,
+          "thousands_separator": false,
+          "type": "plain"
+        },
+        "type": "number"
+      },
+      {
+        "description": "第1档价格",
+        "id": "fldwmqe9Pn",
+        "name": "P1",
+        "style": {
+          "percentage": false,
+          "precision": 2,
+          "thousands_separator": false,
+          "type": "plain"
+        },
+        "type": "number"
+      },
+      {
+        "description": "第2档价格",
+        "id": "fldxZKHugn",
+        "name": "P2",
+        "style": {
+          "percentage": false,
+          "precision": 2,
+          "thousands_separator": false,
+          "type": "plain"
+        },
+        "type": "number"
+      },
+      {
+        "description": "第6档数量",
+        "id": "fldwnlMgOk",
+        "name": "Q6",
+        "style": {
+          "percentage": false,
+          "precision": 0,
+          "thousands_separator": false,
+          "type": "plain"
+        },
+        "type": "number"
+      },
+      {
+        "description": "第10档折扣代码",
+        "id": "fldWJ85o92",
+        "name": "D10",
+        "style": {
+          "type": "plain"
+        },
+        "type": "text"
+      },
+      {
+        "id": "fldQHW4iAm",
+        "name": "印刷方式",
+        "style": {
+          "type": "plain"
+        },
+        "type": "text"
+      },
+      {
+        "bidirectional": false,
+        "description": "关联父记录，若本字段有值说明该记录为关联的父记录的子记录",
+        "id": "fldMboSuRF",
+        "link_table": "tblWCNqefJHAxfMY",
+        "name": "父记录",
+        "type": "link"
+      },
+      {
+        "description": "第8档价格",
+        "id": "fld8KnBQk0",
+        "name": "P8",
+        "style": {
+          "percentage": false,
+          "precision": 2,
+          "thousands_separator": false,
+          "type": "plain"
+        },
+        "type": "number"
+      },
+      {
+        "description": "装箱数，每箱装的产品数量，pcs/ctn",
+        "id": "fldM9LN4dw",
+        "name": "件数/箱",
+        "style": {
+          "percentage": false,
+          "precision": 0,
+          "thousands_separator": false,
+          "type": "plain"
+        },
+        "type": "number"
+      },
+      {
+        "description": "第3档数量",
+        "id": "fldy4sRp6G",
+        "name": "Q3",
+        "style": {
+          "percentage": false,
+          "precision": 0,
+          "thousands_separator": false,
+          "type": "plain"
+        },
+        "type": "number"
+      },
+      {
+        "description": "第5档折扣代码",
+        "id": "fldoD6Tr6C",
+        "name": "D5",
+        "style": {
+          "type": "plain"
+        },
+        "type": "text"
+      },
+      {
+        "description": "第4档数量",
+        "id": "fld7k1NTWR",
+        "name": "Q4",
+        "style": {
+          "percentage": false,
+          "precision": 0,
+          "thousands_separator": false,
+          "type": "plain"
+        },
+        "type": "number"
+      },
+      {
+        "description": "第7档价格",
+        "id": "fldo0AW8eg",
+        "name": "P7",
+        "style": {
+          "percentage": false,
+          "precision": 2,
+          "thousands_separator": false,
+          "type": "plain"
+        },
+        "type": "number"
+      },
+      {
+        "description": "第9档折扣代码",
+        "id": "fldsVglTJ9",
+        "name": "D9",
+        "style": {
+          "type": "plain"
+        },
+        "type": "text"
+      },
+      {
+        "description": "达到计费重15kg以上的产品数量",
+        "expression": "ROUNDUP(15/(MAX(bitable::$table[tblWCNqefJHAxfMY].$field[fld9RB8ycs]*bitable::$table[tblWCNqefJHAxfMY].$field[fldh6nJpXN]*bitable::$table[tblWCNqefJHAxfMY].$field[fldXoIwUty]/6000,bitable::$table[tblWCNqefJHAxfMY].$field[fld9QTAxlL])/bitable::$table[tblWCNqefJHAxfMY].$field[fldM9LN4dw]),0)",
+        "id": "fldAAfbcQ8",
+        "name": "大货起订量",
+        "type": "formula"
+      },
+      {
+        "description": "第4档折扣代码",
+        "id": "fldXLsn91U",
+        "name": "D4",
+        "style": {
+          "type": "plain"
+        },
+        "type": "text"
+      },
+      {
+        "id": "fldCS8mxDV",
+        "name": "SKU",
+        "style": {
+          "type": "plain"
+        },
+        "type": "text"
+      },
+      {
+        "description": "第9档价格",
+        "id": "fldmn9ttDj",
+        "name": "P9",
+        "style": {
+          "percentage": false,
+          "precision": 2,
+          "thousands_separator": false,
+          "type": "plain"
+        },
+        "type": "number"
+      },
+      {
+        "description": "TP+数字",
+        "id": "fldHb6xDKX",
+        "name": "产品编号",
+        "style": {
+          "type": "plain"
+        },
+        "type": "text"
+      },
+      {
+        "description": "商品是否含有液体/气体/电池/磁铁/木材等",
+        "id": "fldOoTyBCb",
+        "multiple": true,
+        "name": "运输风险提示",
+        "options": [
+          {
+            "hue": "Blue",
+            "lightness": "Lighter",
+            "name": "含液体"
+          },
+          {
+            "hue": "Orange",
+            "lightness": "Lighter",
+            "name": "含气罐"
+          },
+          {
+            "hue": "Wathet",
+            "lightness": "Lighter",
+            "name": "含电池"
+          },
+          {
+            "hue": "Yellow",
+            "lightness": "Lighter",
+            "name": "含磁铁"
+          },
+          {
+            "hue": "Turquoise",
+            "lightness": "Lighter",
+            "name": "含木材"
+          }
+        ],
+        "type": "select"
+      },
+      {
+        "description": "第6档折扣代码",
+        "id": "fldgVhoTGu",
+        "name": "D6",
+        "style": {
+          "type": "plain"
+        },
+        "type": "text"
+      },
+      {
+        "description": "第5档价格",
+        "id": "fldjDXiuGa",
+        "name": "P5",
+        "style": {
+          "percentage": false,
+          "precision": 2,
+          "thousands_separator": false,
+          "type": "plain"
+        },
+        "type": "number"
+      },
+      {
+        "description": "当前record_id",
+        "expression": "RECORD_ID()",
+        "id": "fldfwWSmG4",
+        "name": "record_id",
+        "type": "formula"
+      },
+      {
+        "description": "第3档折扣代码",
+        "id": "fldqvvf48v",
+        "name": "D3",
+        "style": {
+          "type": "plain"
+        },
+        "type": "text"
+      },
+      {
+        "description": "颜色/尺寸/型号",
+        "id": "fldoQQU5d4",
+        "name": "产品规格",
+        "style": {
+          "type": "plain"
+        },
+        "type": "text"
+      },
+      {
+        "description": "第8档折扣代码",
+        "id": "fldTbxZ0PF",
+        "name": "D8",
+        "style": {
+          "type": "plain"
+        },
+        "type": "text"
+      },
+      {
+        "description": "仅供参考的产品图片附件",
+        "id": "fldr9B4JZT",
+        "name": "参考图片",
+        "type": "attachment"
+      },
+      {
+        "description": "营销场景或节假日的主题",
+        "id": "fldhpxIuni",
+        "name": "主题",
+        "style": {
+          "type": "plain"
+        },
+        "type": "text"
+      },
+      {
+        "id": "fldzRHCCht",
+        "multiple": false,
+        "name": "商品负责人",
+        "type": "user"
+      },
+      {
+        "description": "第6档价格",
+        "id": "fldJhBDjXl",
+        "name": "P6",
+        "style": {
+          "percentage": false,
+          "precision": 2,
+          "thousands_separator": false,
+          "type": "plain"
+        },
+        "type": "number"
+      },
+      {
+        "description": "第1档折扣代码",
+        "id": "fldxuOjgNY",
+        "name": "D1",
+        "style": {
+          "type": "plain"
+        },
+        "type": "text"
+      },
+      {
+        "description": "若按照大货起订量的数量订购且希望整体利润率在30%时商品的定价",
+        "expression": "ROUNDUP(((MAX(bitable::$table[tblWCNqefJHAxfMY].$field[fld9RB8ycs]*bitable::$table[tblWCNqefJHAxfMY].$field[fldh6nJpXN]*bitable::$table[tblWCNqefJHAxfMY].$field[fldXoIwUty]/6000,bitable::$table[tblWCNqefJHAxfMY].$field[fld9QTAxlL])/bitable::$table[tblWCNqefJHAxfMY].$field[fldM9LN4dw])*25+bitable::$table[tblWCNqefJHAxfMY].$field[fld8TxZIL3])/0.7/7,2)",
+        "id": "fldGmb0jfi",
+        "name": "大货参考定价基准",
+        "type": "formula"
+      },
+      {
+        "description": "第2档折扣代码",
+        "id": "fldaKhL9mW",
+        "name": "D2",
+        "style": {
+          "type": "plain"
+        },
+        "type": "text"
+      },
+      {
+        "description": "1688、阿里国际等供应商的网站链接",
+        "id": "fldXcL0vwo",
+        "name": "来源厂家",
+        "style": {
+          "type": "plain"
+        },
+        "type": "text"
+      },
+      {
+        "description": "标记为下次上架的商品",
+        "id": "fldW9tz1Se",
+        "name": "选品",
+        "type": "checkbox"
+      },
+      {
+        "id": "fldn5dP24T",
+        "name": "商品主图",
+        "type": "attachment"
+      },
+      {
+        "description": "第4档价格",
+        "id": "fldYBHKBBA",
+        "name": "P4",
+        "style": {
+          "percentage": false,
+          "precision": 2,
+          "thousands_separator": false,
+          "type": "plain"
+        },
+        "type": "number"
+      },
+      {
+        "id": "flds2DArkf",
+        "name": "产品材质",
+        "style": {
+          "type": "plain"
+        },
+        "type": "text"
+      },
+      {
+        "description": "第2档数量",
+        "id": "fldmz23R4a",
+        "name": "Q2",
+        "style": {
+          "percentage": false,
+          "precision": 0,
+          "thousands_separator": false,
+          "type": "plain"
+        },
+        "type": "number"
+      },
+      {
+        "description": "第3档价格",
+        "id": "fldvbodMrv",
+        "name": "P3",
+        "style": {
+          "percentage": false,
+          "precision": 2,
+          "thousands_separator": false,
+          "type": "plain"
+        },
+        "type": "number"
+      },
+      {
+        "description": "第10档数量",
+        "id": "fldxWM3R4j",
+        "name": "Q10",
+        "style": {
+          "percentage": false,
+          "precision": 0,
+          "thousands_separator": false,
+          "type": "plain"
+        },
+        "type": "number"
+      },
+      {
+        "id": "fld6YFlAS8",
+        "name": "产品类型",
+        "style": {
+          "type": "plain"
+        },
+        "type": "text"
+      },
+      {
+        "description": "第7档数量",
+        "id": "fldHROD0Dv",
+        "name": "Q7",
+        "style": {
+          "percentage": false,
+          "precision": 0,
+          "thousands_separator": false,
+          "type": "plain"
+        },
+        "type": "number"
+      },
+      {
+        "description": "整箱毛重(kg)",
+        "id": "fld9QTAxlL",
+        "name": "重量(箱子+产品)公斤",
+        "style": {
+          "percentage": false,
+          "precision": 1,
+          "thousands_separator": false,
+          "type": "plain"
+        },
+        "type": "number"
+      },
+      {
+        "description": "内部ID",
+        "id": "flduZfKfEp",
+        "name": "id",
+        "style": {
+          "rules": [
+            {
+              "length": 3,
+              "type": "incremental_number"
+            }
+          ]
+        },
+        "type": "auto_number"
+      },
+      {
+        "id": "fld5f3LV9i",
+        "name": "备注",
+        "style": {
+          "type": "plain"
+        },
+        "type": "text"
+      },
+      {
+        "description": "产品搜索关键词",
+        "id": "fldEP9IffW",
+        "name": "产品关键词",
+        "style": {
+          "type": "plain"
+        },
+        "type": "text"
+      },
+      {
+        "description": "第8档数量",
+        "id": "fldEk00C1U",
+        "name": "Q8",
+        "style": {
+          "percentage": false,
+          "precision": 0,
+          "thousands_separator": false,
+          "type": "plain"
+        },
+        "type": "number"
+      },
+      {
+        "description": "第7档折扣代码",
+        "id": "fldRvl9f7Y",
+        "name": "D7",
+        "style": {
+          "type": "plain"
+        },
+        "type": "text"
+      },
+      {
+        "description": "第1档数量",
+        "id": "fld1s2z9s9",
+        "name": "Q1",
+        "style": {
+          "percentage": false,
+          "precision": 0,
+          "thousands_separator": false,
+          "type": "plain"
+        },
+        "type": "number"
+      },
+      {
+        "id": "fldXoIwUty",
+        "name": "箱子尺寸 高(cm)",
+        "style": {
+          "percentage": false,
+          "precision": 1,
+          "thousands_separator": false,
+          "type": "plain"
+        },
+        "type": "number"
+      },
+      {
+        "id": "fldsExhPlC",
+        "multiple": true,
+        "name": "Mark",
+        "options": [
+          {
+            "hue": "Blue",
+            "lightness": "Lighter",
+            "name": "1688下架了"
+          },
+          {
+            "hue": "Orange",
+            "lightness": "Lighter",
+            "name": "子弹"
+          },
+          {
+            "hue": "Wathet",
+            "lightness": "Lighter",
+            "name": "重复产品"
+          }
+        ],
+        "type": "select"
+      },
+      {
+        "id": "fld8ifVx8f",
+        "name": "产品名称",
+        "style": {
+          "type": "plain"
+        },
+        "type": "text"
+      },
+      {
+        "id": "fldzPbQJ2z",
+        "name": "白底图",
+        "type": "attachment"
+      },
+      {
+        "description": "用于电商详情页产品介绍，完整描述产品特性、功能、卖点等任何从商家角度希望向顾客传达的信息",
+        "id": "fldUUI8Hki",
+        "name": "产品描述",
+        "style": {
+          "type": "plain"
+        },
+        "type": "text"
+      },
+      {
+        "id": "fldVQEfx44",
+        "name": "产品简称",
+        "style": {
+          "type": "plain"
+        },
+        "type": "text"
+      },
+      {
+        "description": "第5档数量",
+        "id": "fld0umxN2O",
+        "name": "Q5",
+        "style": {
+          "percentage": false,
+          "precision": 0,
+          "thousands_separator": false,
+          "type": "plain"
+        },
+        "type": "number"
+      },
+      {
+        "id": "fldlBxqPgu",
+        "name": "分类",
+        "style": {
+          "type": "plain"
+        },
+        "type": "text"
+      },
+      {
+        "description": "1688采购价",
+        "id": "fld8TxZIL3",
+        "name": "1688价(元)",
+        "style": {
+          "percentage": false,
+          "precision": 2,
+          "thousands_separator": false,
+          "type": "plain"
+        },
+        "type": "number"
+      },
+      {
+        "description": "第10档价格",
+        "id": "fld4RRasq8",
+        "name": "P10",
+        "style": {
+          "percentage": false,
+          "precision": 2,
+          "thousands_separator": false,
+          "type": "plain"
+        },
+        "type": "number"
+      },
+      {
+        "description": "产品描述的简化版",
+        "id": "fldwtQtwf5",
+        "name": "简要说明",
+        "style": {
+          "type": "plain"
+        },
+        "type": "text"
+      }
+    ],
+    "total": 64
+  }
+}
